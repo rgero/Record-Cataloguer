@@ -1,0 +1,25 @@
+services:
+  record-recorder:
+    container_name: record-recorder
+    build:
+      context: .
+    env_file:
+      - .env
+    networks:
+      - container-dmz
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.records.rule=Host(`records.roymond.net`)"
+      - "traefik.http.routers.records.entrypoints=websecure"
+      - "traefik.http.routers.records.tls.certresolver=production"
+      - "traefik.http.services.records.loadbalancer.server.port=3345"
+    ports:
+      - "3345:3345"
+    volumes:
+      - ./src:/src
+      - ./public:/public
+    restart: always
+
+networks:
+  container-dmz:
+    external: true
