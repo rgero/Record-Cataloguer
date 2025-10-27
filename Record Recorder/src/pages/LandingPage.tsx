@@ -1,7 +1,6 @@
 import { Card, CardContent, Grid, Typography, useTheme } from "@mui/material";
 
 import type { Theme } from "@mui/material/styles";
-import { grey } from "@mui/material/colors";
 import { useEffect } from "react";
 
 const LandingPage = () => {

@@ -1,4 +1,4 @@
-FROM node:18-alpine AS build
+FROM node:22.14-alpine AS build
 
 WORKDIR /record-recorder
 
@@ -10,12 +10,11 @@ COPY . .
 
 RUN npm run build
 
-FROM node:18-alpine AS serve
+FROM node:22.14-alpine AS serve
 
 RUN npm install -g serve
 
 COPY --from=build /record-recorder/dist /record-recorder/dist
-
 COPY serve.json /record-recorder/dist/serve.json
 
 EXPOSE 3345
