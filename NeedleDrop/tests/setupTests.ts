@@ -11,6 +11,8 @@ vi.mock('@mui/icons-material', () => ({
   Delete: () => null,
   DragHandle: () => null,
   BarChart: () => null,
+  ChevronLeft: () => null,
+  ChevronRight: () => null,
 }));
 
 

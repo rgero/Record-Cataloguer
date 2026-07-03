@@ -56,4 +56,5 @@ export interface UserSettings {
   sortModels: TableSortModels
   tableColumnOrders: TableColumnOrderModels
   statsStartDate: string
+  pageSize: number
 }

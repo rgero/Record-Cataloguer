@@ -21,9 +21,6 @@ const AppLayout = () => {
           display: "flex",
           justifyContent: "center",
           mt: "1rem",
-
-          // Add enough padding to clear the BottomNav height
-          pb: "50px"
         }}>
         <Container disableGutters sx={{ width: { xs: "95%", md: "90%" } }}>
           <Outlet />

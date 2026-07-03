@@ -2,12 +2,14 @@ import {flexRender,
   type ColumnOrderState,
   getCoreRowModel,
   getFilteredRowModel,
+  getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
   type ColumnDef,
   type ColumnFiltersState,
   type FilterFn,
   type OnChangeFn,
+  type PaginationState,
   type SortingState,
   type VisibilityState,
 } from "@tanstack/react-table";
@@ -15,9 +17,10 @@ import { DefaultSettings } from "@interfaces/settings/DefaultSettings";
 import type { UserSettings } from "@interfaces/settings/UserSettings";
 import { useEffect, useMemo, useState } from "react";
 import { useUserContext } from "@context/users/UserContext";
-import { Table, TableBody, TableContainer, TableHead, TableRow, TableSortLabel, Paper } from "@mui/material";
+import { Table, TableBody, TableContainer, TableHead, TableRow, TableSortLabel, Paper, Box } from "@mui/material";
 import { StyledTableCell } from "./StyledTableCell";
 import { StyledTableRow } from "./StyledTableRow";
+import TablePagination from "./TablePagination";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import {
   type BooleanFilterDraft,
@@ -86,7 +89,7 @@ const ReactTable = <T,>({ columns, data, settingsColumn, getRowSx }: ReactTableP
   }, [getCurrentUserSettings, settingsColumn]);
 
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
-    settingsVisibility as VisibilityState,
+    settingsVisibility as unknown as VisibilityState,
   );
 
   const settingsSorting = useMemo<SortingState>(() => {
@@ -101,6 +104,15 @@ const ReactTable = <T,>({ columns, data, settingsColumn, getRowSx }: ReactTableP
   }, [getCurrentUserSettings, settingsColumn]);
 
   const [sorting, setSorting] = useState<SortingState>(settingsSorting);
+
+  const settingsPageSize = useMemo(() => {
+    return getCurrentUserSettings()?.pageSize ?? DefaultSettings.pageSize;
+  }, [getCurrentUserSettings]);
+
+  const [pagination, setPagination] = useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: settingsPageSize,
+  });
 
   const filterableColumns = useMemo(() => getFilterableColumnOptions(columns), [columns]);
 
@@ -132,7 +144,7 @@ const ReactTable = <T,>({ columns, data, settingsColumn, getRowSx }: ReactTableP
   const [columnOrder, setColumnOrder] = useState<ColumnOrderState>(settingsColumnOrder);
 
   useEffect(() => {
-    setColumnVisibility(settingsVisibility as VisibilityState);
+    setColumnVisibility(settingsVisibility as unknown as VisibilityState);
   }, [settingsVisibility]);
 
   useEffect(() => {
@@ -147,12 +159,19 @@ const ReactTable = <T,>({ columns, data, settingsColumn, getRowSx }: ReactTableP
     setColumnOrder(settingsColumnOrder);
   }, [settingsColumnOrder]);
 
+  useEffect(() => {
+    setPagination((previousState) => ({
+      ...previousState,
+      pageSize: settingsPageSize,
+    }));
+  }, [settingsPageSize]);
+
   const handleColumnVisibilityChange: OnChangeFn<VisibilityState> = (updater) => {
     setColumnVisibility((previousState) => {
       const nextState = typeof updater === "function" ? updater(previousState) : updater;
 
       updateCurrentUserSettings({
-        [settingsColumn]: nextState as UserSettings[TableKeys],
+        [settingsColumn]: nextState as unknown as UserSettings[TableKeys],
       });
 
       return nextState;
@@ -383,23 +402,41 @@ const ReactTable = <T,>({ columns, data, settingsColumn, getRowSx }: ReactTableP
     });
   };
 
+  const handlePaginationChange: OnChangeFn<PaginationState> = (updater) => {
+    setPagination((previousState) => {
+      const nextState = typeof updater === "function" ? updater(previousState) : updater;
+      
+      // Update user settings when page size changes
+      if (nextState.pageSize !== previousState.pageSize) {
+        updateCurrentUserSettings({
+          pageSize: nextState.pageSize,
+        });
+      }
+
+      return nextState;
+    });
+  };
+
   const table = useReactTable({
     columns,
     data,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
     enableSortingRemoval: false,
     state: {
       columnVisibility,
       sorting,
       columnFilters,
       columnOrder,
+      pagination,
     },
     onColumnVisibilityChange: handleColumnVisibilityChange,
     onSortingChange: handleSortingChange,
     onColumnFiltersChange: handleColumnFiltersChange,
     onColumnOrderChange: handleColumnOrderChange,
+    onPaginationChange: handlePaginationChange,
     filterFns: {
       includesNormalizedFilter,
     },
@@ -418,67 +455,71 @@ const ReactTable = <T,>({ columns, data, settingsColumn, getRowSx }: ReactTableP
   };
 
   return (
-    <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 700, width: "100%", tableLayout: "fixed" }} aria-label="customized table">
-        <TableHead>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id}>
-              {headerGroup.headers.map((header) => {
-                const isSorted = header.column.getIsSorted();
-                return (
-                  <StyledTableCell
-                    key={header.id}
-                    sortDirection={isSorted}
-                    sx={{ width: header.getSize() }}
-                  >
-                    <TableSortLabel
-                      active={!!isSorted}
-                      direction={isSorted || "asc"}
-                      onClick={header.column.getToggleSortingHandler()}
-                      sx={{
-                        color: "inherit !important",
-                        whiteSpace: "nowrap",
-                        "& .MuiTableSortLabel-icon": {
-                          color: "inherit !important",
-                        },
-                      }}
+    <Box sx={{ width: "100%" }}>
+      <TableContainer component={Paper} sx={{ mb: 2 }}>
+        <Table sx={{ minWidth: 700, width: "100%", tableLayout: "fixed" }} aria-label="customized table">
+          <TableHead>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id}>
+                {headerGroup.headers.map((header) => {
+                  const isSorted = header.column.getIsSorted();
+                  return (
+                    <StyledTableCell
+                      key={header.id}
+                      sortDirection={isSorted}
+                      sx={{ width: header.getSize() }}
                     >
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
-                          )}
-                    </TableSortLabel>
+                      <TableSortLabel
+                        active={!!isSorted}
+                        direction={isSorted || "asc"}
+                        onClick={header.column.getToggleSortingHandler()}
+                        sx={{
+                          color: "inherit !important",
+                          whiteSpace: "nowrap",
+                          "& .MuiTableSortLabel-icon": {
+                            color: "inherit !important",
+                          },
+                        }}
+                      >
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(
+                              header.column.columnDef.header,
+                              header.getContext(),
+                            )}
+                      </TableSortLabel>
+                    </StyledTableCell>
+                  );
+                })}
+              </TableRow>
+            ))}
+          </TableHead>
+          <TableBody>
+            {table.getRowModel().rows.map((row) => (
+              <StyledTableRow
+                key={row.id}
+                sx={{
+                  ...(getRowSx ? getRowSx(row.original) : {}),
+                  cursor: "pointer",
+                }}
+                onClick={() => handleRowClick(row.original)}
+              >
+                {row.getVisibleCells().map((cell) => (
+                  <StyledTableCell 
+                    key={cell.id} 
+                    sx={{ width: cell.column.getSize() }} // Maintains structure across columns explicitly
+                  >
+                    {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </StyledTableCell>
-                );
-              })}
-            </TableRow>
-          ))}
-        </TableHead>
-        <TableBody>
-          {table.getRowModel().rows.map((row) => (
-            <StyledTableRow
-              key={row.id}
-              sx={{
-                ...(getRowSx ? getRowSx(row.original) : {}),
-                cursor: "pointer",
-              }}
-              onClick={() => handleRowClick(row.original)}
-            >
-              {row.getVisibleCells().map((cell) => (
-                <StyledTableCell 
-                  key={cell.id} 
-                  sx={{ width: cell.column.getSize() }} // Maintains structure across columns explicitly
-                >
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </StyledTableCell>
-              ))}
-            </StyledTableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
+                ))}
+              </StyledTableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </TableContainer>
+
+      <TablePagination table={table} />
+    </Box>
   );
 };
 

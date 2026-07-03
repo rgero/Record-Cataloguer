@@ -26,6 +26,7 @@ const emptyWant : WantedItem = {
   notes: "",
   imageUrl: "",
   weight: "Medium",
+  created_at: new Date(),
 }
 
 
@@ -67,7 +68,7 @@ const WantItemForm = () => {
   }, [wantedItem, isCreateMode, formData]);
 
   if (!isCreateMode && isFormLoading) {
-    return <SuspenseFormWrapper />;
+    return <SuspenseFormWrapper><div>Loading...</div></SuspenseFormWrapper>;
   }
 
   if (!formData) return <div>Loading...</div>;
