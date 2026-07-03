@@ -8,7 +8,7 @@ import ToggleOnIcon from "@mui/icons-material/ToggleOn";
 import ListAltIcon from "@mui/icons-material/ListAlt";
 import type { ColumnDef } from "@tanstack/react-table";
 import { useSearchParams } from "react-router-dom";
-import {type BooleanFilterValue, type ColumnFilterDraft, type ColumnFilterDraftMap, type DateFilterOperator, type FilterableColumnOption, type NumberFilterOperator, getFilterableColumnOptions, isFilterDraftActive, parseColumnFilterDraftMapFromSearchParams, writeColumnFilterDraftMapToSearchParams} from "./urlColumnFilters";
+import {type BooleanFilterValue, type ColumnFilterDraft, type ColumnFilterDraftMap, type DateFilterOperator, type FilterableColumnOption, type NumberFilterOperator, type TextFilterOperator, getFilterableColumnOptions, isFilterDraftActive, parseColumnFilterDraftMapFromSearchParams, writeColumnFilterDraftMapToSearchParams} from "./urlColumnFilters";
 
 interface ColumnFilterButtonProps<T> {
   columns: ColumnDef<T, any>[];
@@ -293,24 +293,49 @@ const ColumnFilterButton = <T,>({ columns }: ColumnFilterButtonProps<T>) => {
     }
 
     return (
-      <TextField
-        label="Contains"
-        value={draft.value}
-        onChange={(event) => {
-          updateDraft(option.id, (current) => {
-            if (current.variant !== "text") {
-              return current;
-            }
+      <Stack direction={{ xs: "column", sm: "row" }} spacing={1.25}>
+        <TextField
+          select
+          label="Condition"
+          value={draft.operator}
+          size="small"
+          sx={{ minWidth: 170 }}
+          onChange={(event) => {
+            const nextOperator = event.target.value as TextFilterOperator;
+            updateDraft(option.id, (current) => {
+              if (current.variant !== "text") {
+                return current;
+              }
 
-            return {
-              ...current,
-              value: event.target.value,
-            };
-          });
-        }}
-        fullWidth
-        size="small"
-      />
+              return {
+                ...current,
+                operator: nextOperator,
+              };
+            });
+          }}
+        >
+          <MenuItem value="includes">Includes</MenuItem>
+          <MenuItem value="excludes">Does not include</MenuItem>
+        </TextField>
+        <TextField
+          label="Value"
+          value={draft.value}
+          onChange={(event) => {
+            updateDraft(option.id, (current) => {
+              if (current.variant !== "text") {
+                return current;
+              }
+
+              return {
+                ...current,
+                value: event.target.value,
+              };
+            });
+          }}
+          fullWidth
+          size="small"
+        />
+      </Stack>
     );
   };
 

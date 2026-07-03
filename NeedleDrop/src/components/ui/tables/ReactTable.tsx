@@ -328,38 +328,45 @@ const ReactTable = <T,>({ columns, data, settingsColumn, getRowSx }: ReactTableP
       return matchesDateFilter(row.getValue(columnId), filterDraft);
     }
 
-    const rowValue = normalizeFilterValue(row.getValue(columnId)).toLowerCase();
-    const filterText = String(
-      filterDraft?.variant === "text" ? filterDraft.value : filterValue ?? "",
-    ).trim().toLowerCase();
+    if (filterDraft?.variant === "text") {
+      const rowValue = normalizeFilterValue(row.getValue(columnId)).toLowerCase();
+      const filterText = filterDraft.value.trim().toLowerCase();
 
-    if (!filterText) {
-      return true;
-    }
-
-    if (filterText.includes(",")) {
-      const filterTerms = filterText
-        .split(",")
-        .map((term) => term.trim())
-        .filter((term) => term.length > 0);
-
-      if (filterTerms.length === 0) {
+      if (!filterText) {
         return true;
       }
 
-      const rowTerms = rowValue
-        .split(",")
-        .map((term) => term.trim())
-        .filter((term) => term.length > 0);
+      let matches = false;
 
-      if (rowTerms.length === 0) {
-        return false;
+      if (filterText.includes(",")) {
+        const filterTerms = filterText
+          .split(",")
+          .map((term) => term.trim())
+          .filter((term) => term.length > 0);
+
+        if (filterTerms.length === 0) {
+          return true;
+        }
+
+        const rowTerms = rowValue
+          .split(",")
+          .map((term) => term.trim())
+          .filter((term) => term.length > 0);
+
+        if (rowTerms.length === 0) {
+          matches = false;
+        } else {
+          matches = filterTerms.every((filterTerm) => rowTerms.some((rowTerm) => rowTerm.includes(filterTerm)));
+        }
+      } else {
+        matches = rowValue.includes(filterText);
       }
 
-      return filterTerms.every((filterTerm) => rowTerms.some((rowTerm) => rowTerm.includes(filterTerm)));
+      // Apply operator logic
+      return filterDraft.operator === "includes" ? matches : !matches;
     }
 
-    return rowValue.includes(filterText);
+    return true;
   };
 
   const handleColumnFiltersChange: OnChangeFn<ColumnFiltersState> = (updater) => {

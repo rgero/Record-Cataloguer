@@ -7,10 +7,12 @@ type TableColumnDef<T> = ColumnDef<T, unknown>;
 export type FilterVariant = "text" | "number" | "date" | "boolean" | "select";
 export type NumberFilterOperator = "gt" | "lt" | "eq";
 export type DateFilterOperator = "after" | "before" | "between";
+export type TextFilterOperator = "includes" | "excludes";
 export type BooleanFilterValue = "" | "true" | "false";
 
 export interface TextFilterDraft {
   variant: "text";
+  operator: TextFilterOperator;
   value: string;
 }
 
@@ -105,6 +107,10 @@ const isDateOperator = (operator: string | null): operator is DateFilterOperator
   return operator === "after" || operator === "before" || operator === "between";
 };
 
+const isTextOperator = (operator: string | null): operator is TextFilterOperator => {
+  return operator === "includes" || operator === "excludes";
+};
+
 const buildFilterDraft = (
   searchParams: URLSearchParams,
   option: FilterableColumnOption,
@@ -152,9 +158,13 @@ const buildFilterDraft = (
     };
   }
 
+  const operatorParam = searchParams.get(`${FILTER_QUERY_PREFIX}${option.id}_op`);
+  const valueParam = searchParams.get(`${FILTER_QUERY_PREFIX}${option.id}`) ?? "";
+
   return {
     variant: "text",
-    value: searchParams.get(`${FILTER_QUERY_PREFIX}${option.id}`) ?? "",
+    operator: isTextOperator(operatorParam) ? operatorParam : "includes",
+    value: valueParam,
   };
 };
 
@@ -238,6 +248,7 @@ export const writeColumnFilterDraftMapToSearchParams = (
     }
 
     if (draft.variant === "text") {
+      nextParams.set(`${FILTER_QUERY_PREFIX}${columnId}_op`, draft.operator);
       nextParams.set(`${FILTER_QUERY_PREFIX}${columnId}`, draft.value.trim());
       return;
     }
