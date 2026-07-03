@@ -30,8 +30,12 @@ export const WantedItemTableColumnDef = [
     cell: info => info.getValue(),
   }),
   columnHelper.accessor('imageUrl', {
+    id: "imageUrl", // Need to add the ID here to disable the filter later.
     header: 'Cover',
-    enableSorting: false, // Replaces sortable: false
+    enableSorting: false,
+    meta: {
+      disableFilter: true,
+    },
     size: 105,
     cell: ({ getValue }) => {
       const val = getValue();

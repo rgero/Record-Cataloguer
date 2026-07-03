@@ -20,7 +20,14 @@ const ColumnFilterButton = <T,>({ columns }: ColumnFilterButtonProps<T>) => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [open, setOpen] = useState(false);
 
-  const filterOptions = useMemo(() => getFilterableColumnOptions(columns), [columns]);
+  const filterOptions = useMemo(() => {
+    const options = getFilterableColumnOptions(columns);
+    return options.filter((option) => {
+      const matchingColumn = columns.find((col) => col.id === option.id);
+      return !matchingColumn?.meta?.disableFilter;
+    });
+  }, [columns]);
+
   const activeFilterMap = useMemo(
     () => parseColumnFilterDraftMapFromSearchParams(searchParams, filterOptions),
     [searchParams, filterOptions],
