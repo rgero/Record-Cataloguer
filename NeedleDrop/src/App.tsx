@@ -1,26 +1,26 @@
 import { BrowserRouter, Route, Routes } from "react-router-dom"
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query"
+import { Suspense, lazy } from "react";
 
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import AppLayout from "@components/ui/AppLayout"
 import AuthenticatedRoute from "@components/AuthenticatedRoute"
-import EditorRoute from "@components/EditorRoute"
 import { AuthenticationProvider } from "./context/authentication/AuthenticationProvider"
 import { CssBaseline } from "@mui/material"
 import CustomToaster from "@components/ui/CustomToaster"
 import DarkModeProvider from "./context/theme/DarkModeProvider"
 import { DialogProvider } from "@context/dialog/DialogProvider"
+import EditorRoute from "@components/EditorRoute"
 import { ErrorBoundary } from "react-error-boundary"
 import ErrorFallback from "./components/ui/ErrorFallback"
+import Loading from "@components/ui/Loading";
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { LocationProvider } from "@context/location/LocationProvider"
 import { PlaylogProvider } from "@context/playlogs/PlaylogProvider"
 import ScrollToTop from "@components/ui/ScrollToTop"
-import { Suspense, lazy } from "react";
 import { UserProvider } from "@context/users/UserProvider"
 import { VinylProvider } from "@context/vinyl/VinylProvider"
 import { WantedItemProvider } from "@context/wanted/WantedItemProvider"
-import Loading from "@components/ui/Loading";
 
 const LandingPage = lazy(() => import("./pages/LandingPage"));
 const LoginPage = lazy(() => import("@pages/LoginPage"));
