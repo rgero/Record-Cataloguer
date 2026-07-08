@@ -128,7 +128,7 @@ const WantItemForm = () => {
     navigate("/vinyls/create", { 
       state: { 
         fromWantItem: {
-          wantedID: id,
+          wantedID: Number(id),
           artist: formData.artist,
           album: formData.album,
           notes: formData.notes,

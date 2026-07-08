@@ -99,8 +99,7 @@ const LocationForm = () => {
         toast.success("Location created successfully!");
         navigate(`/locations`);
       } else {
-        const itemToUpdate = formData;
-        delete itemToUpdate.percentage;
+        const { percentage, ...itemToUpdate } = formData;
         await updateLocation(Number(id), itemToUpdate);
         setIsInEdit(false);
         toast.success("Location updated successfully!");

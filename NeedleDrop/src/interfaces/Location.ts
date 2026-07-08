@@ -6,5 +6,4 @@ export interface Location {
   percentage?: number | null;
   purchaseCount?: number;
   notes: string | null;
-  percentage?: number;
 }

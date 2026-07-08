@@ -103,7 +103,7 @@ const VinylForm = () => {
       nextErrors.length = "Length must be zero or greater.";
     }
 
-    if (formData.price && (Number.isNaN(formData.price) || formData.price < 0) ) {
+    if (formData.price != null && (Number.isNaN(formData.price) || formData.price < 0)) {
       nextErrors.price = "Price must be zero or greater.";
     }
 
