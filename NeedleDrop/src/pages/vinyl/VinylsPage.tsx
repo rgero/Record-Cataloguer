@@ -2,7 +2,7 @@ import ColumnFilterButton from "@components/ui/tables/ColumnFilterButton";
 import ColumnVisibilityButton from "@components/ui/tables/ColumnVisibilityButton";
 import DataTablePage from "@components/ui/DataTablePage";
 import { IconButton } from "@mui/material";
-import NewReleasesIcon from '@mui/icons-material/NewReleases';
+import HearingDisabled from '@mui/icons-material/HearingDisabled';
 import SuspenseTableWrapper from "@components/ui/SuspenseTableWrapper";
 import UnplayedVinylsTable from "@components/vinyls/UnplayedVinylsTable";
 import VinylsTable from "@components/vinyls/VinylsTable";
@@ -14,7 +14,7 @@ const VinylsPage = () => {
 
   return (
     <DataTablePage
-      title={showUnplayed ? "Unplayed Vinyls" : "Vinyls"}
+      title={showUnplayed ? "Unplayed" : "Vinyls"}
       headerActions={(
         <>
           <IconButton 
@@ -22,7 +22,7 @@ const VinylsPage = () => {
             color={showUnplayed ? "primary" : "default"}
             title={showUnplayed ? "Showing unplayed only" : "Show all vinyls"}
           >
-            <NewReleasesIcon />
+            <HearingDisabled />
           </IconButton>
           <ColumnVisibilityButton
             columns={vinylColumns}
