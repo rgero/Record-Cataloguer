@@ -7,6 +7,7 @@ import FormHeader from "@components/ui/FormHeader";
 import type { PlayLog } from "@interfaces/PlayLog";
 import { format } from 'date-fns';
 import toast from "react-hot-toast";
+import useCombinedLoading from "@hooks/useCombinedLoading";
 import { useDialogProvider } from "@context/dialog/DialogContext";
 import { usePlaylogContext } from "@context/playlogs/PlaylogContext";
 import { useUserContext } from "@context/users/UserContext";
@@ -34,6 +35,8 @@ const PlaylogForm = () => {
 
   const isCreateMode = !id || id === 'new';
 
+    const isFormLoading = useCombinedLoading([isLoading, usersLoading]);
+
   const [inEdit, setIsInEdit] = useState<boolean>(isCreateMode);
   const [formData, setFormData] = useState<PlaylogFormModel | null>(isCreateMode ? emptyPlaylog : null);
   const [errors, setErrors] = useState<PlaylogFormErrors>({});
@@ -45,6 +48,15 @@ const PlaylogForm = () => {
       setFormData(currentPlaylog);
     }
   }, [currentPlaylog, isCreateMode, formData]);
+
+  useEffect(() => {
+    if (!isCreateMode && !isFormLoading && !currentPlaylog) {
+      toast.error("The requested playlog could not be found.", {
+        id: "missing-play-error",
+      });
+      navigate("/plays", { replace: true });
+    }
+  }, [isCreateMode, isFormLoading, currentPlaylog, navigate]);
 
   // Find the full vinyl object based on the album_id in formData
   const selectedVinyl = useMemo(() => {
@@ -127,12 +139,12 @@ const PlaylogForm = () => {
             options={vinyls}
             getOptionLabel={(option) => `${option.artist} - ${option.album}`}
             isOptionEqualToValue={(option, value) => option.id === value.id}
-            value={selectedVinyl}
+            value={selectedVinyl ?? null}
             onChange={(_event, newValue) => {
               setErrors((prev) => ({ ...prev, album_id: undefined }));
-              setFormData({ 
+              setFormData({
                 ...formData, 
-                album_id: newValue ? newValue.id : null,
+                album_id: newValue?.id ?? null,
               });
             }}
             renderInput={(params) => (

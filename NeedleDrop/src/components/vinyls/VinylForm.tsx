@@ -78,8 +78,18 @@ const VinylForm = () => {
     }
   }, [currentVinyl, isCreateMode, formData]);
 
+  useEffect(() => {
+    if (!isCreateMode && !isFormLoading && !currentVinyl) {
+      toast.error("The requested vinyl record could not be found.", {
+        id: "missing-vinyl-error",
+      });
+      navigate("/vinyls", { replace: true });
+    }
+  }, [isCreateMode, isFormLoading, currentVinyl, navigate]);
+
   const validateForm = () => {
     const nextErrors: VinylFormErrors = {};
+    if (!formData) return false;
 
     if (!formData.artist.trim()) {
       nextErrors.artist = "Artist is required.";
@@ -93,7 +103,7 @@ const VinylForm = () => {
       nextErrors.length = "Length must be zero or greater.";
     }
 
-    if (Number.isNaN(formData.price) || formData.price < 0) {
+    if (formData.price && (Number.isNaN(formData.price) || formData.price < 0) ) {
       nextErrors.price = "Price must be zero or greater.";
     }
 
@@ -287,7 +297,9 @@ const VinylForm = () => {
             fullWidth
             disabled={!inEdit}
             placeholder="0.00"
-            inputProps={{ step: "0.01" }}
+            slotProps={{
+              htmlInput: { step: "0.01" } //  Correct for MUI v6
+            }}
             error={Boolean(errors.price)}
             helperText={errors.price}
           />

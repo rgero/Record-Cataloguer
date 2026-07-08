@@ -2,7 +2,7 @@ import { Suspense, type  ReactNode } from "react";
 import { Typography } from "@mui/material";
 
 interface SuspenseFormWrapperProps {
-  children: ReactNode;
+  children?: ReactNode;
   fallback?: ReactNode;
 }
 

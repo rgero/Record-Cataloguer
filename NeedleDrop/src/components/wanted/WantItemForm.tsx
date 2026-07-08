@@ -67,6 +67,15 @@ const WantItemForm = () => {
     }
   }, [wantedItem, isCreateMode, formData]);
 
+  useEffect(() => {
+    if (!isCreateMode && !isFormLoading && !wantedItem) {
+      toast.error("The requested wanted item could not be found.", {
+        id: "missing-want-error",
+      });
+      navigate("/wantlist", { replace: true });
+    }
+  }, [isCreateMode, isFormLoading, wantedItem, navigate]);
+
   if (!isCreateMode && isFormLoading) {
     return <SuspenseFormWrapper><div>Loading...</div></SuspenseFormWrapper>;
   }

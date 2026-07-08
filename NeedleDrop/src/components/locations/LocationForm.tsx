@@ -6,13 +6,13 @@ import { APIProvider } from "@vis.gl/react-google-maps";
 import { AddressSearchMap } from "./AddressSearchMap";
 import FloatingAction from "@components/ui/FloatingAction";
 import FormHeader from "@components/ui/FormHeader";
-import SuspenseFormWrapper from "@components/ui/SuspenseFormWrapper";
 import type { Location } from "@interfaces/Location";
+import SuspenseFormWrapper from "@components/ui/SuspenseFormWrapper";
 import toast from "react-hot-toast";
+import { useCombinedLoading } from "@hooks/useCombinedLoading";
 import { useDialogProvider } from "@context/dialog/DialogContext";
 import { useLocationContext } from "@context/location/LocationContext";
 import { useUserContext } from "@context/users/UserContext";
-import { useCombinedLoading } from "@hooks/useCombinedLoading";
 
 const emptyLocation: Location = {
   name: "",
@@ -64,6 +64,15 @@ const LocationForm = () => {
       setFormData(currentLocation);
     }
   }, [currentLocation, isCreateMode, formData]);
+
+  useEffect(() => {
+    if (!isCreateMode && !isFormLoading && !currentLocation) {
+      toast.error("The requested location could not be found.", {
+        id: "missing-location-error",
+      });
+      navigate("/locations", { replace: true });
+    }
+  }, [isCreateMode, isFormLoading, currentLocation, navigate]);
 
   if (!isCreateMode && isFormLoading) {
     return <SuspenseFormWrapper />;
