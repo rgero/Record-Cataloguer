@@ -145,7 +145,6 @@ const ColumnVisibilityButton = <T,>({ columns, settingsColumn }: ColumnVisibilit
         <IconButton
           onClick={() => setOpen(true)}
           aria-label="Configure visible columns"
-          sx={{ mr: 1 }}
         >
           <SettingsIcon fontSize="small" />
         </IconButton>

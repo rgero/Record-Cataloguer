@@ -29,10 +29,10 @@ const DataTablePage = ({title, children, slug = null, headerActions,}: DataTable
         <Grid>
           <Typography variant="h5">{title}</Typography>
         </Grid>
-        <Grid sx={{ display: "flex", alignItems: "center" }}>
+        <Grid sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
           {headerActions}
           {isEditor && (
-            <IconButton onClick={() => navigate(`/${resolvedSlug}/create`)} sx={{ mr: 1 }}>
+            <IconButton onClick={() => navigate(`/${resolvedSlug}/create`)}>
               <AddCircle fontSize="inherit"/>  
             </IconButton>
           )}

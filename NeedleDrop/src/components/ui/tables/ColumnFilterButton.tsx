@@ -353,7 +353,6 @@ const ColumnFilterButton = <T,>({ columns }: ColumnFilterButtonProps<T>) => {
           onClick={handleOpen}
           aria-label="Configure table filters"
           color={activeFilterCount > 0 ? "primary" : "default"}
-          sx={{ mr: 1 }}
         >
           <SearchIcon fontSize="small" />
         </IconButton>
