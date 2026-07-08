@@ -26,7 +26,6 @@ const LandingPage = lazy(() => import("./pages/LandingPage"));
 const LoginPage = lazy(() => import("@pages/LoginPage"));
 const PageNotFound = lazy(() => import("@pages/PageNotFound"));
 const VinylsPage = lazy(() => import("@pages/vinyl/VinylsPage"));
-const UnplayedVinylsPage = lazy(() => import("@pages/vinyl/UnplayedVinylsPage"));
 const VinylDetailsPage = lazy(() => import("@pages/vinyl/VinylDetailsPage"));
 const LocationsPage = lazy(() => import("@pages/locations/LocationsPage"));
 const LocationDetailsPage = lazy(() => import("@pages/locations/LocationDetailsPage"));
@@ -77,7 +76,6 @@ const App = () => {
                                   <Route index element={<VinylsPage/>}/>
                                   <Route path="vinyls">
                                     <Route index element={<VinylsPage/>} />
-                                    <Route path="unplayed" element={<UnplayedVinylsPage/>} />
                                     <Route path="create" element={<EditorRoute><VinylDetailsPage/></EditorRoute>} />
                                     <Route path=':id' element={<VinylDetailsPage/>} />
                                   </Route>
