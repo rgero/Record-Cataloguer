@@ -77,6 +77,7 @@ export const WantedItemTableColumnDef = [
   }),
   columnHelper.accessor('created_at', {
     header: 'Date Added',
+    sortingFn: "datetime",
     meta: {
       filterVariant: 'date',
     },

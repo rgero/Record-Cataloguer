@@ -27,6 +27,7 @@ const vinylColumns = [
   }),
   columnHelper.accessor("purchaseDate", {
     header: "Purchase Date",
+    sortingFn: "datetime",
     cell: info => {
       const value = info.getValue();
       if (!value) return '';

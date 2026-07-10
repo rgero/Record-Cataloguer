@@ -13,6 +13,7 @@ export const PlayLogTableColumnDef = [
   }),
   columnHelper.accessor("date", {
     header: "Date",
+    sortingFn: "datetime",
     // Standard Date formatting for the cell
     cell: (info) => info.getValue().toLocaleDateString(),
   }),
