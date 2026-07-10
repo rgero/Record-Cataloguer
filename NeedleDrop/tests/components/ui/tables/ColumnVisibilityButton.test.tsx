@@ -96,7 +96,7 @@ describe("ColumnVisibilityButton", () => {
     render(<ColumnVisibilityButton columns={columns} settingsColumn="playlogs" />);
 
     fireEvent.click(screen.getByRole("button", { name: /configure visible columns/i }));
-    fireEvent.click(await screen.findByRole("button", { name: "Reset Visibility" }));
+    fireEvent.click(await screen.findByRole("button", { name: "Visibility" }));
 
     expect(mockUpdateCurrentUserSettings).toHaveBeenCalledWith({
       playlogs: {

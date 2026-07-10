@@ -1,4 +1,4 @@
-import {Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, Fade, IconButton, List, ListItem, ListItemIcon, ListItemText, Tooltip, useMediaQuery, useTheme} from "@mui/material";
+import {Button, Checkbox, Dialog, DialogActions, DialogContent, DialogTitle, Divider, Fade, IconButton, List, ListItem, ListItemIcon, ListItemText, Tooltip, useMediaQuery, useTheme} from "@mui/material";
 import { useMemo, useState } from "react";
 import { DragDropContext, Draggable, Droppable, type DropResult } from "@hello-pangea/dnd";
 
@@ -8,6 +8,7 @@ import { DragHandle } from "@mui/icons-material";
 import SettingsIcon from "@mui/icons-material/Settings";
 import type { UserSettings } from "@interfaces/settings/UserSettings";
 import { useUserContext } from "@context/users/UserContext";
+import {RotateLeft} from '@mui/icons-material';
 
 type TableKeys = Extract<keyof UserSettings, "locations" | "playlogs" | "vinyls" | "wantedItems">;
 
@@ -206,8 +207,10 @@ const ColumnVisibilityButton = <T,>({ columns, settingsColumn }: ColumnVisibilit
           </DragDropContext>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleResetToDefaults}>Reset Visibility</Button>
-          <Button onClick={handleResetOrder}>Reset Order</Button>
+          <Button onClick={handleResetToDefaults} startIcon={<RotateLeft/>} sx={{ '& .MuiButton-startIcon': { marginRight: '1px' } }}>Visibility</Button>
+          <Divider orientation="vertical" variant="middle" flexItem sx={{ mx: 0.25 }} />
+          <Button onClick={handleResetOrder} startIcon={<RotateLeft/>} sx={{ '& .MuiButton-startIcon': { marginRight: '1px' } }}>Order</Button>
+          <Divider orientation="vertical" variant="middle" flexItem sx={{ mx: 0.25 }} />
           <Button onClick={() => setOpen(false)}>Done</Button>
         </DialogActions>
       </Dialog>

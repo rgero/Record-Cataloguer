@@ -13,6 +13,7 @@ vi.mock('@mui/icons-material', () => ({
   BarChart: () => null,
   ChevronLeft: () => null,
   ChevronRight: () => null,
+  RotateLeft: () => null,
 }));
 
 
