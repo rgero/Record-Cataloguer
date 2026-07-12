@@ -9,6 +9,29 @@ import StatsAccordion from "@components/stats/ui/StatsAccordion"
 
 type Duration = "30d" | "3m" | "6m" | "1y" | "all"
 
+const CustomTooltip = ({ active, payload, label }: any) => {
+  const theme = useTheme();
+  if (active && payload && payload.length) {
+    return (
+      <div style={{
+        backgroundColor: theme.palette.background.paper,
+        border: "1px solid #ccc",
+        padding: "10px",
+        borderRadius: "4px",
+        boxShadow: "0 2px 5px rgba(0,0,0,0.15)"
+      }}>
+        <p style={{ margin: 0, fontWeight: "bold", color: theme.palette.text.primary }}>
+          Date: {label || payload[0].payload.name}
+        </p>
+        <p style={{ margin: 0, color: "#8884d8" }}>
+          Plays: {payload[0].value}
+        </p>
+      </div>
+    );
+  }
+  return null;
+};
+
 const PlaysByTimelineChart = ({stats, expanded, onToggle}: {stats: Stats, expanded: boolean, onToggle: (expanded: boolean) => void}) => {
   const [duration, setDuration] = useState<Duration>("30d")
   const [data, setData] = useState<{name: string, plays: number}[]>([]);
@@ -79,7 +102,9 @@ const PlaysByTimelineChart = ({stats, expanded, onToggle}: {stats: Stats, expand
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="name" tickFormatter={(str) => isMobile ? "" : str.substring(5)} />
                 <YAxis width="auto" />
-                <Tooltip />
+                <Tooltip 
+                  content={<CustomTooltip />}
+                />
                 <Area type="monotone" dataKey="plays" stroke="#8884d8" fill={theme.palette.primary.main} />
               </AreaChart>
             </ResponsiveContainer>
