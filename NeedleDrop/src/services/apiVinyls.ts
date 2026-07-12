@@ -122,10 +122,13 @@ export const updateVinyl = async (id: number, updatedItem: Partial<Vinyl>): Prom
 }
 
 export const deleteVinyl = async (id: number): Promise<void> => {
-  const { error } = await supabase.from("vinyls").delete().eq("id", id);
+  const { error } = await supabase
+    .from("vinyls")
+    .update({ archived: true })
+    .eq("id", id);
 
   if (error) {
     console.error(error);
-    throw new Error("Failed to delete vinyl");
+    throw new Error("Failed to archive vinyl");
   }
 };

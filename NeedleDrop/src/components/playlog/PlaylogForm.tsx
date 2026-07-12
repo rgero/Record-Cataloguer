@@ -29,13 +29,13 @@ const PlaylogForm = () => {
   const { id } = useParams();
   const { openDeleteDialog } = useDialogProvider();
   const { isLoading, getPlaylogById, updatePlaylog, createPlaylog, deletePlaylog } = usePlaylogContext();
-  const { isLoading: isVinylLoading, vinyls = [] } = useVinylContext();
+  const { isLoading: isVinylLoading, vinyls = [], getVinylById } = useVinylContext();
   const { isLoading: usersLoading, editorUsers, isEditor } = useUserContext();
   const navigate = useNavigate();
 
   const isCreateMode = !id || id === 'new';
 
-    const isFormLoading = useCombinedLoading([isLoading, usersLoading]);
+  const isFormLoading = useCombinedLoading([isLoading, usersLoading]);
 
   const [inEdit, setIsInEdit] = useState<boolean>(isCreateMode);
   const [formData, setFormData] = useState<PlaylogFormModel | null>(isCreateMode ? emptyPlaylog : null);
@@ -58,11 +58,19 @@ const PlaylogForm = () => {
     }
   }, [isCreateMode, isFormLoading, currentPlaylog, navigate]);
 
-  // Find the full vinyl object based on the album_id in formData
+  // Find the full vinyl object safely using the context helper method (which searches archived items too)
   const selectedVinyl = useMemo(() => {
     if (!formData?.album_id) return null;
-    return vinyls.find((v) => v.id === formData.album_id) || null;
-  }, [vinyls, formData?.album_id]);
+    return getVinylById(formData.album_id);
+  }, [getVinylById, formData?.album_id]);
+
+  // Dynamically compute autocomplete choices. Only append the selected vinyl to the active dropdown list if it's archived.
+  const autocompleteOptions = useMemo(() => {
+    if (selectedVinyl && !vinyls.some((v) => v.id === selectedVinyl.id)) {
+      return [...vinyls, selectedVinyl];
+    }
+    return vinyls;
+  }, [vinyls, selectedVinyl]);
 
   const validateForm = () => {
     const nextErrors: PlaylogFormErrors = {};
@@ -136,8 +144,8 @@ const PlaylogForm = () => {
           </FormLabel>
           <Autocomplete
             disabled={!inEdit}
-            options={vinyls}
-            getOptionLabel={(option) => `${option.artist} - ${option.album}`}
+            options={autocompleteOptions}
+            getOptionLabel={(option) => `${option.artist} - ${option.album}${option.archived ? " (Archived)" : ""}`}
             isOptionEqualToValue={(option, value) => option.id === value.id}
             value={selectedVinyl ?? null}
             onChange={(_event, newValue) => {
