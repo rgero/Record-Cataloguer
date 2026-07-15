@@ -167,6 +167,7 @@ const ColumnFilterButton = <T,>({ columns }: ColumnFilterButtonProps<T>) => {
               });
             }}
           >
+            <MenuItem value="eq">Equals</MenuItem>
             <MenuItem value="after">After</MenuItem>
             <MenuItem value="before">Before</MenuItem>
             <MenuItem value="between">Between</MenuItem>

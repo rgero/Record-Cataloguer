@@ -6,7 +6,7 @@ type TableColumnDef<T> = ColumnDef<T, unknown>;
 
 export type FilterVariant = "text" | "number" | "date" | "boolean" | "select";
 export type NumberFilterOperator = "gt" | "lt" | "eq";
-export type DateFilterOperator = "after" | "before" | "between";
+export type DateFilterOperator = "after" | "before" | "between" | "eq";
 export type TextFilterOperator = "includes" | "excludes";
 export type BooleanFilterValue = "" | "true" | "false";
 
@@ -104,7 +104,7 @@ const isNumberOperator = (operator: string | null): operator is NumberFilterOper
 };
 
 const isDateOperator = (operator: string | null): operator is DateFilterOperator => {
-  return operator === "after" || operator === "before" || operator === "between";
+  return operator === "after" || operator === "before" || operator === "between" || operator === "eq";
 };
 
 const isTextOperator = (operator: string | null): operator is TextFilterOperator => {
@@ -151,7 +151,7 @@ const buildFilterDraft = (
 
     return {
       variant: "date",
-      operator: isDateOperator(operatorParam) ? operatorParam : "after",
+      operator: isDateOperator(operatorParam) ? operatorParam : "eq",
       value: valueParam,
       from: fromParam,
       to: toParam,

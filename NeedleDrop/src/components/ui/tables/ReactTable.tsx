@@ -287,7 +287,22 @@ const ReactTable = <T,>({ columns, data, settingsColumn, getRowSx }: ReactTableP
       return rowDateTime > compareTime;
     }
 
-    return rowDateTime < compareTime;
+    if (draft.operator === "before") {
+      return rowDateTime < compareTime;
+    }
+
+    if (draft.operator === "eq") {
+      const rowDate = new Date(rowDateTime);
+      const compareDate = new Date(compareTime);
+
+      return (
+        rowDate.getUTCFullYear() === compareDate.getUTCFullYear() &&
+        rowDate.getUTCMonth() === compareDate.getUTCMonth() &&
+        rowDate.getUTCDate() === compareDate.getUTCDate()
+      );
+    }
+
+    return false;
   };
 
   const matchesBooleanFilter = (rawValue: unknown, draft: BooleanFilterDraft): boolean => {
