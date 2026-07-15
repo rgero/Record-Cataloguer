@@ -5,6 +5,7 @@ import StatsSettingsDialog from "@components/dialogs/StatsSettingsDialog";
 import SettingsDialog from "@components/dialogs/SettingsDialog";
 
 export const DialogProvider: React.FC<{ children: React.ReactNode }> = ({children}) => {
+  const [columnFilterDialogOpen, setColumnFilterDialogOpen] = useState(false);
   const [columnVisibilityDialogOpen, setColumnVisibilityDialogOpen] = useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [settingsDialogOpen, setSettingsDialogOpen] = useState(false);
@@ -27,16 +28,19 @@ export const DialogProvider: React.FC<{ children: React.ReactNode }> = ({childre
   };
 
   const toggleSettingsDialog = () => { setSettingsDialogOpen(prev => !prev) };
+  const toggleColumnFilterDialog = () => { setColumnFilterDialogOpen(prev => !prev) };
   const toggleColumnVisibilityDialog = () => { setColumnVisibilityDialogOpen(prev => !prev) };
 
   return (
     <DialogContext.Provider
       value={{
+        columnFilterDialogOpen,
         columnVisibilityDialogOpen,
         deleteDialogOpen,
         settingsDialogOpen,
         statsOrderDialogOpen,
         statsOrderKey,
+        toggleColumnFilterDialog,
         toggleColumnVisibilityDialog,
         toggleSettingsDialog,
         toggleStatsOrderDialog,

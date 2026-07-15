@@ -11,6 +11,7 @@ export type DialogDetails = {
 
 export interface DialogContextProps {
   columnVisibilityDialogOpen: boolean;
+  columnFilterDialogOpen: boolean;
   deleteDialogOpen: boolean;
   settingsDialogOpen: boolean;
   statsOrderDialogOpen: boolean;
@@ -20,6 +21,7 @@ export interface DialogContextProps {
   confirmAction: () => Promise<void> | void;
   dialogDetails: DialogDetails | null;
   setDialogDetails: (details: DialogDetails | null) => void;
+  toggleColumnFilterDialog: () => void;
   toggleColumnVisibilityDialog: () => void;
   toggleStatsOrderDialog: (open: boolean, key?: StatsOrderKey) => void;
   toggleSettingsDialog: () => void;
