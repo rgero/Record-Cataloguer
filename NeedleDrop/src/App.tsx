@@ -60,8 +60,8 @@ const App = () => {
                 <VinylProvider>
                   <WantedItemProvider>
                     <PlaylogProvider>
-                      <DialogProvider>
-                        <BrowserRouter>
+                      <BrowserRouter>
+                        <DialogProvider>
                           <ErrorBoundary FallbackComponent={ErrorFallback}>
                             <ScrollToTop/>
                             <Suspense fallback={<Loading />}>
@@ -106,9 +106,9 @@ const App = () => {
                               </Routes>
                             </Suspense>
                           </ErrorBoundary>
-                        </BrowserRouter>
-                        <CssBaseline/>
-                      </DialogProvider>
+                          <CssBaseline/>
+                        </DialogProvider>
+                      </BrowserRouter>
                     </PlaylogProvider>
                   </WantedItemProvider>
                 </VinylProvider>

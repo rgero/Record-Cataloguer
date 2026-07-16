@@ -1,12 +1,17 @@
 import React, { useState } from "react";
 import { DialogContext, type ConfirmAction, type DialogDetails, type StatsOrderKey } from "./DialogContext";
+import type { ColumnFilterDialogConfig, ColumnVisibilityDialogConfig } from "./tableDialogTypes";
 import DeleteDialog from "@components/dialogs/DeleteDialog";
 import StatsSettingsDialog from "@components/dialogs/StatsSettingsDialog";
 import SettingsDialog from "@components/dialogs/SettingsDialog";
+import ColumnVisibilityDialog from "@components/dialogs/ColumnVisibilityDialog";
+import ColumnFilterDialog from "@components/dialogs/ColumnFilterDialog";
 
 export const DialogProvider: React.FC<{ children: React.ReactNode }> = ({children}) => {
   const [columnFilterDialogOpen, setColumnFilterDialogOpen] = useState(false);
+  const [columnFilterDialogConfig, setColumnFilterDialogConfig] = useState<ColumnFilterDialogConfig | null>(null);
   const [columnVisibilityDialogOpen, setColumnVisibilityDialogOpen] = useState(false);
+  const [columnVisibilityDialogConfig, setColumnVisibilityDialogConfig] = useState<ColumnVisibilityDialogConfig | null>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [settingsDialogOpen, setSettingsDialogOpen] = useState(false);
   const [statsOrderDialogOpen, setStatsOrderDialogOpen] = useState(false);
@@ -28,20 +33,41 @@ export const DialogProvider: React.FC<{ children: React.ReactNode }> = ({childre
   };
 
   const toggleSettingsDialog = () => { setSettingsDialogOpen(prev => !prev) };
-  const toggleColumnFilterDialog = () => { setColumnFilterDialogOpen(prev => !prev) };
-  const toggleColumnVisibilityDialog = () => { setColumnVisibilityDialogOpen(prev => !prev) };
+  const openColumnFilterDialog = (config: ColumnFilterDialogConfig) => {
+    setColumnFilterDialogConfig(config);
+    setColumnFilterDialogOpen(true);
+  };
+
+  const closeColumnFilterDialog = () => {
+    setColumnFilterDialogOpen(false);
+    setColumnFilterDialogConfig(null);
+  };
+
+  const openColumnVisibilityDialog = (config: ColumnVisibilityDialogConfig) => {
+    setColumnVisibilityDialogConfig(config);
+    setColumnVisibilityDialogOpen(true);
+  };
+
+  const closeColumnVisibilityDialog = () => {
+    setColumnVisibilityDialogOpen(false);
+    setColumnVisibilityDialogConfig(null);
+  };
 
   return (
     <DialogContext.Provider
       value={{
         columnFilterDialogOpen,
+        columnFilterDialogConfig,
         columnVisibilityDialogOpen,
+        columnVisibilityDialogConfig,
         deleteDialogOpen,
         settingsDialogOpen,
         statsOrderDialogOpen,
         statsOrderKey,
-        toggleColumnFilterDialog,
-        toggleColumnVisibilityDialog,
+        openColumnFilterDialog,
+        closeColumnFilterDialog,
+        openColumnVisibilityDialog,
+        closeColumnVisibilityDialog,
         toggleSettingsDialog,
         toggleStatsOrderDialog,
         dialogDetails,
@@ -54,6 +80,8 @@ export const DialogProvider: React.FC<{ children: React.ReactNode }> = ({childre
       <DeleteDialog />
       <SettingsDialog/>
       <StatsSettingsDialog />
+      <ColumnFilterDialog />
+      <ColumnVisibilityDialog />
       {children}
     </DialogContext.Provider>
   );

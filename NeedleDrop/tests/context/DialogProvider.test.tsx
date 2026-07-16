@@ -12,8 +12,16 @@ vi.mock("@components/dialogs/SettingsDialog", () => ({
   default: () => <div data-testid="mock-settings-dialog" />
 }));
 
-vi.mock("@components/dialogs/StatsSettingDialog", () => ({
+vi.mock("@components/dialogs/StatsSettingsDialog", () => ({
   default: () => <div data-testid="mock-stats-dialog" />
+}));
+
+vi.mock("@components/dialogs/ColumnFilterDialog", () => ({
+  default: () => <div data-testid="mock-column-filter-dialog" />
+}));
+
+vi.mock("@components/dialogs/ColumnVisibilityDialog", () => ({
+  default: () => <div data-testid="mock-column-visibility-dialog" />
 }));
 
 const TestConsumer = () => {

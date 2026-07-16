@@ -1,5 +1,7 @@
 import { createContext, useContext } from "react";
 
+import type { ColumnFilterDialogConfig, ColumnVisibilityDialogConfig, TableSettingsKey } from "./tableDialogTypes";
+
 export type ConfirmAction = () => Promise<void> | void;
 
 export type StatsOrderKey = 'houseStatsSectionOrder' | 'userStatsSectionOrder';
@@ -11,7 +13,9 @@ export type DialogDetails = {
 
 export interface DialogContextProps {
   columnVisibilityDialogOpen: boolean;
+  columnVisibilityDialogConfig: ColumnVisibilityDialogConfig | null;
   columnFilterDialogOpen: boolean;
+  columnFilterDialogConfig: ColumnFilterDialogConfig | null;
   deleteDialogOpen: boolean;
   settingsDialogOpen: boolean;
   statsOrderDialogOpen: boolean;
@@ -21,8 +25,10 @@ export interface DialogContextProps {
   confirmAction: () => Promise<void> | void;
   dialogDetails: DialogDetails | null;
   setDialogDetails: (details: DialogDetails | null) => void;
-  toggleColumnFilterDialog: () => void;
-  toggleColumnVisibilityDialog: () => void;
+  openColumnFilterDialog: (config: ColumnFilterDialogConfig) => void;
+  closeColumnFilterDialog: () => void;
+  openColumnVisibilityDialog: (config: ColumnVisibilityDialogConfig) => void;
+  closeColumnVisibilityDialog: () => void;
   toggleStatsOrderDialog: (open: boolean, key?: StatsOrderKey) => void;
   toggleSettingsDialog: () => void;
 }

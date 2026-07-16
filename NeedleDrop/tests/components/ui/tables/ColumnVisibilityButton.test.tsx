@@ -1,10 +1,12 @@
 import { describe, expect, it, vi, beforeEach } from "vitest";
 import { fireEvent, render, screen } from "@testing-library/react";
 import { createColumnHelper } from "@tanstack/react-table";
+import { MemoryRouter } from "react-router-dom";
 
 import ColumnVisibilityButton from "@components/ui/tables/ColumnVisibilityButton";
 import { DefaultSettings } from "@interfaces/settings/DefaultSettings";
 import { useUserContext, type UserContextType } from "@context/users/UserContext";
+import { DialogProvider } from "@context/dialog/DialogProvider";
 
 vi.mock("@context/users/UserContext", async (importOriginal) => {
   const actual = await importOriginal<typeof import("@context/users/UserContext")>();
@@ -56,8 +58,18 @@ describe("ColumnVisibilityButton", () => {
     mockedUseUserContext.mockReturnValue(createContext());
   });
 
+  const renderButton = () => {
+    return render(
+      <MemoryRouter>
+        <DialogProvider>
+          <ColumnVisibilityButton columns={columns} settingsColumn="playlogs" />
+        </DialogProvider>
+      </MemoryRouter>,
+    );
+  };
+
   it("opens the modal and shows available column toggles", async () => {
-    render(<ColumnVisibilityButton columns={columns} settingsColumn="playlogs" />);
+    renderButton();
 
     fireEvent.click(screen.getByRole("button", { name: /configure visible columns/i }));
 
@@ -79,7 +91,7 @@ describe("ColumnVisibilityButton", () => {
       createContext({ getCurrentUserSettings: () => currentSettings }),
     );
 
-    render(<ColumnVisibilityButton columns={columns} settingsColumn="playlogs" />);
+    renderButton();
 
     fireEvent.click(screen.getByRole("button", { name: /configure visible columns/i }));
     fireEvent.click((await screen.findAllByRole("checkbox"))[0]);
@@ -93,7 +105,7 @@ describe("ColumnVisibilityButton", () => {
   });
 
   it("resets the table visibility to default settings", async () => {
-    render(<ColumnVisibilityButton columns={columns} settingsColumn="playlogs" />);
+    renderButton();
 
     fireEvent.click(screen.getByRole("button", { name: /configure visible columns/i }));
     fireEvent.click(await screen.findByRole("button", { name: "Visibility" }));
