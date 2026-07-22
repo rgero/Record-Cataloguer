@@ -45,12 +45,7 @@ const DataTablePage = ({title, children, slug = null, headerActions,}: DataTable
             width: '100%',
           }}
       >
-        <Box
-          sx={{
-            width: 'fit-content',
-            maxWidth: '100%',
-          }}
-        >
+        <Box sx={{width: '100%'}}>
           {children}
         </Box>
       </Box>
