@@ -23,7 +23,6 @@ const emptyLocation: Location = {
 
 type LocationFormErrors = {
   name?: string;
-  address?: string;
 };
 
 const LocationForm = () => {
@@ -49,10 +48,6 @@ const LocationForm = () => {
 
     if (!formData?.name.trim()) {
       nextErrors.name = "Location name is required.";
-    }
-
-    if (!formData?.address?.trim()) {
-      nextErrors.address = "Address is required.";
     }
 
     setErrors(nextErrors);
@@ -158,8 +153,6 @@ const LocationForm = () => {
                 initialAddress={formData.address} 
                 onAddressSelect={handleAddressChange} 
                 disabled={!inEdit}
-              error={Boolean(errors.address)}
-              helperText={errors.address}
             />
           </Grid>
 

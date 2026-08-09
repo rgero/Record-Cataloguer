@@ -249,7 +249,6 @@ describe("LocationForm", () => {
 
     await waitFor(() => {
       expect(screen.getByText(/location name is required/i)).toBeInTheDocument();
-      expect(screen.getByText(/address is required/i)).toBeInTheDocument();
       expect(mockToast.error).toHaveBeenCalledWith("Please fix the highlighted fields before saving.");
     });
   });
