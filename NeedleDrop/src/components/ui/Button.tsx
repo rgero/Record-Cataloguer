@@ -1,0 +1,45 @@
+import { Box, ButtonBase, type Palette, Typography, useTheme } from "@mui/material"
+
+import React from "react"
+
+interface ButtonProps {
+  icon: React.ReactNode
+  onClick: () => void
+  title: string | null
+  color?: keyof Palette | string
+  disabled?: boolean;
+}
+
+const Button: React.FC<ButtonProps> = ({ icon, onClick, title, color, disabled = false }) => {
+  const theme = useTheme()
+
+  let resolvedColor: string = "inherit"
+
+  const paletteEntry = color ? (theme.palette as Palette)[color as keyof Palette] : undefined;
+  if (color && paletteEntry && typeof paletteEntry === "object" && "main" in paletteEntry) {
+    resolvedColor = (paletteEntry as { main: string }).main;
+  } else if (color) {
+    resolvedColor = color;
+  }
+
+  return (
+    <ButtonBase
+      sx={{
+        borderRadius: "40px",
+        paddingInline: "5px",
+        color: resolvedColor,
+      }}
+      disabled={disabled}
+      onClick={onClick}
+    >
+      <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+        {icon}
+        <Typography variant="caption" sx={{ color: resolvedColor }}>
+          {title}
+        </Typography>
+      </Box>
+    </ButtonBase>
+  )
+}
+
+export default Button

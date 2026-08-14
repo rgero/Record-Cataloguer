@@ -1,6 +1,5 @@
+import type { ColumnFilterDialogConfig, ColumnVisibilityDialogConfig } from "./tableDialogTypes";
 import { createContext, useContext } from "react";
-
-import type { ColumnFilterDialogConfig, ColumnVisibilityDialogConfig, TableSettingsKey } from "./tableDialogTypes";
 
 export type ConfirmAction = () => Promise<void> | void;
 
@@ -17,6 +16,7 @@ export interface DialogContextProps {
   columnFilterDialogOpen: boolean;
   columnFilterDialogConfig: ColumnFilterDialogConfig | null;
   deleteDialogOpen: boolean;
+  feedbackOpen: boolean;
   settingsDialogOpen: boolean;
   statsOrderDialogOpen: boolean;
   statsOrderKey: StatsOrderKey | null;
@@ -29,6 +29,7 @@ export interface DialogContextProps {
   closeColumnFilterDialog: () => void;
   openColumnVisibilityDialog: (config: ColumnVisibilityDialogConfig) => void;
   closeColumnVisibilityDialog: () => void;
+  toggleFeedbackOpen: () => void;
   toggleStatsOrderDialog: (open: boolean, key?: StatsOrderKey) => void;
   toggleSettingsDialog: () => void;
 }

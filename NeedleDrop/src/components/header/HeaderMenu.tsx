@@ -1,5 +1,6 @@
 import {Divider, Menu} from "@mui/material";
 
+import FeedbackOption from "./HeaderOptions/FeedbackOption";
 import LogoutOption from "./HeaderOptions/LogoutOption";
 import SettingsOption from "./HeaderOptions/SettingsOption";
 import ToggleDarkModeOption from "./HeaderOptions/ToggleDarkModeOption";
@@ -28,8 +29,10 @@ const HeaderMenu: React.FC<Props> = ({anchorEl, closeFn}) => {
         <UserOption/>
         <Divider/>
         <SettingsOption/>
-        <Divider/>
         <ToggleDarkModeOption/>
+        <Divider/>
+        <FeedbackOption/>
+        <Divider/>
         <LogoutOption/>
       </Menu>
     </>

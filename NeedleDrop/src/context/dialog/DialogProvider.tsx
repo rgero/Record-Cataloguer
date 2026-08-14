@@ -6,12 +6,14 @@ import StatsSettingsDialog from "@components/dialogs/StatsSettingsDialog";
 import SettingsDialog from "@components/dialogs/SettingsDialog";
 import ColumnVisibilityDialog from "@components/dialogs/ColumnVisibilityDialog";
 import ColumnFilterDialog from "@components/dialogs/ColumnFilterDialog";
+import FeedbackDialog from "../../feedback/FeedbackDialog";
 
 export const DialogProvider: React.FC<{ children: React.ReactNode }> = ({children}) => {
   const [columnFilterDialogOpen, setColumnFilterDialogOpen] = useState(false);
   const [columnFilterDialogConfig, setColumnFilterDialogConfig] = useState<ColumnFilterDialogConfig | null>(null);
   const [columnVisibilityDialogOpen, setColumnVisibilityDialogOpen] = useState(false);
   const [columnVisibilityDialogConfig, setColumnVisibilityDialogConfig] = useState<ColumnVisibilityDialogConfig | null>(null);
+  const [feedbackOpen, setFeedbackOpen] = React.useState(false);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
   const [settingsDialogOpen, setSettingsDialogOpen] = useState(false);
   const [statsOrderDialogOpen, setStatsOrderDialogOpen] = useState(false);
@@ -33,6 +35,9 @@ export const DialogProvider: React.FC<{ children: React.ReactNode }> = ({childre
   };
 
   const toggleSettingsDialog = () => { setSettingsDialogOpen(prev => !prev) };
+
+  const toggleFeedbackOpen = () => setFeedbackOpen(prev => !prev);
+
   const openColumnFilterDialog = (config: ColumnFilterDialogConfig) => {
     setColumnFilterDialogConfig(config);
     setColumnFilterDialogOpen(true);
@@ -61,6 +66,7 @@ export const DialogProvider: React.FC<{ children: React.ReactNode }> = ({childre
         columnVisibilityDialogOpen,
         columnVisibilityDialogConfig,
         deleteDialogOpen,
+        feedbackOpen,
         settingsDialogOpen,
         statsOrderDialogOpen,
         statsOrderKey,
@@ -68,6 +74,7 @@ export const DialogProvider: React.FC<{ children: React.ReactNode }> = ({childre
         closeColumnFilterDialog,
         openColumnVisibilityDialog,
         closeColumnVisibilityDialog,
+        toggleFeedbackOpen,
         toggleSettingsDialog,
         toggleStatsOrderDialog,
         dialogDetails,
@@ -82,6 +89,7 @@ export const DialogProvider: React.FC<{ children: React.ReactNode }> = ({childre
       <StatsSettingsDialog />
       <ColumnFilterDialog />
       <ColumnVisibilityDialog />
+      <FeedbackDialog/>
       {children}
     </DialogContext.Provider>
   );
