@@ -1,4 +1,4 @@
-import { Container, Dialog, Typography } from "@mui/material"
+import { Dialog, DialogContent, DialogTitle } from "@mui/material"
 
 import FeedbackForm from "./FeedbackForm"
 import { useDialogProvider } from "@context/dialog/DialogContext";
@@ -6,13 +6,11 @@ import { useDialogProvider } from "@context/dialog/DialogContext";
 const FeedbackDialog = () => {
   const {feedbackOpen, toggleFeedbackOpen} = useDialogProvider();
   return (
-    <Dialog open={feedbackOpen} onClose={toggleFeedbackOpen}>
-      <Container sx={{padding: "20px", backgroundColor: "background.paper", width: {md: "500px", xs: "100%"}}}>
-        <Typography variant="h6" sx={{marginBottom: "10px"}}>
-          Feedback
-        </Typography>
+    <Dialog open={feedbackOpen} onClose={toggleFeedbackOpen} fullWidth maxWidth="sm" aria-labelledby="feedback-dialog-title">
+      <DialogTitle id="feedback-dialog-title">Feedback</DialogTitle>
+      <DialogContent>
         <FeedbackForm/>
-      </Container>
+      </DialogContent>
     </Dialog>
   )
 }

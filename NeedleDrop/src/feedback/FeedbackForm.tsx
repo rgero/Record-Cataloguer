@@ -4,13 +4,16 @@ import { DoNotDisturb, ThumbUpAlt } from "@mui/icons-material";
 import Button from "@components/ui/Button";
 import toast from "react-hot-toast";
 import { useCreateFeedback } from "./hooks/useCreateFeedback";
+import { useDialogProvider } from "@context/dialog/DialogContext";
 import { useState } from "react"
 
 const FeedbackForm = () => {
   const [title, setTitle] = useState("");
   const [details, setDetails] = useState("");
   const {isAdding, addFeedback} = useCreateFeedback();
+  const {toggleFeedbackOpen} = useDialogProvider();
   const maxLength:number = 10000;
+
   const handleSubmit = async () => {
     if (title == "")
     {
@@ -21,6 +24,7 @@ const FeedbackForm = () => {
     addFeedback({title, description: details}, {onSuccess: () => {
       setDetails("");
       setTitle("");
+      toggleFeedbackOpen();
     }});
   }
 
