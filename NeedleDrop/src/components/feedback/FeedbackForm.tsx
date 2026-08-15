@@ -39,7 +39,7 @@ const FeedbackForm = () => {
 
   return (
     <Container>
-      <Stack spacing={2}>
+      <Stack spacing={2} sx={{paddingTop: 1}}>
         <TextField
           id="outlined-controlled suggestion"
           label="Suggestion"

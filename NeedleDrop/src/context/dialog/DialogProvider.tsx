@@ -6,7 +6,7 @@ import StatsSettingsDialog from "@components/dialogs/StatsSettingsDialog";
 import SettingsDialog from "@components/dialogs/SettingsDialog";
 import ColumnVisibilityDialog from "@components/dialogs/ColumnVisibilityDialog";
 import ColumnFilterDialog from "@components/dialogs/ColumnFilterDialog";
-import FeedbackDialog from "../../feedback/FeedbackDialog";
+import FeedbackDialog from "../../components/feedback/FeedbackDialog";
 
 export const DialogProvider: React.FC<{ children: React.ReactNode }> = ({children}) => {
   const [columnFilterDialogOpen, setColumnFilterDialogOpen] = useState(false);
