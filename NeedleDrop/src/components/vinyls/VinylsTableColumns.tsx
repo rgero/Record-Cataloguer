@@ -55,7 +55,15 @@ const vinylColumns = [
   }),
   columnHelper.accessor("price", {
     header: "Price",
-    cell: info => info.getValue(),
+    cell: info => {
+      const value = info.getValue();
+      if (typeof value === "number")
+      {
+        return value === 0 ? "-" : `$${value.toFixed(2)}`;
+      } else {
+        return "";
+      }
+    },
     meta: {
       filterVariant: "number",
     },
