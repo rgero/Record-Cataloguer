@@ -23,6 +23,7 @@ const emptyPlaylog: PlaylogFormModel = {
   album_id: null,
   listeners: [],
   date: new Date(),
+  notes: "",
 };
 
 const PlaylogForm = () => {
@@ -199,6 +200,19 @@ const PlaylogForm = () => {
             }}
             fullWidth
             disabled={!inEdit}
+          />
+        </Grid>
+
+        {/* Notes Field */}
+        <Grid size={12}>
+          <FormLabel sx={{ mb: 1, display: 'block', fontWeight: 'bold' }}>Notes</FormLabel>
+          <TextField
+            value={formData.notes}
+            onChange={(e) => setFormData({ ...formData, notes: e.target.value })}
+            fullWidth
+            disabled={!inEdit}
+            multiline
+            rows={4}
           />
         </Grid>
 

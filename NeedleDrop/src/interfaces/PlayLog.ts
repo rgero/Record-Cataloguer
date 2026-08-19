@@ -8,6 +8,7 @@ export interface PlayLog {
   album_id: number|null,
   listeners: User[],
   date: Date,
+  notes?: string,
 }
 
 export interface PlaylogDbPayload extends Omit<Partial<PlayLog>, 'playNumber' | 'listeners' | 'date' | 'artist' | 'album'> {

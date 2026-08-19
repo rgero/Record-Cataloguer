@@ -25,7 +25,12 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return currentUser?.settings ?? DefaultSettings;
   }, [currentUser]);
 
-  const updateSettingsMutation = useMutation<User, Error, UserSettings>({
+  const updateSettingsMutation = useMutation<
+    User,
+    Error,
+    UserSettings,
+    { previousUsers?: User[] }
+  >({
     mutationFn: async (newSettings) => {
       if (!user) throw new Error("Not authenticated");
       return updateUserSettings(user.id, newSettings);

@@ -19,6 +19,7 @@ export interface Vinyl {
   imageUrl?: string;
   doubleLP: boolean;
   tags: string[];
+  archived?: boolean;
 }
 
 export interface VinylDbPayload extends Omit<Partial<Vinyl>, 'owners' | 'likedBy' | 'purchaseLocation' | 'purchaseDate' | 'purchasedBy'> {

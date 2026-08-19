@@ -49,7 +49,8 @@ export const updatePlaylog = async (id: number, updatedItem: Partial<PlayLog>) =
   const cleansedUpdate: Partial<PlaylogDbPayload> = {
     album_id: updatedItem.album_id,
     date: updatedItem.date ?? null,
-    listeners: updatedItem.listeners?.map(u => u.id) ?? []
+    listeners: updatedItem.listeners?.map(u => u.id) ?? [],
+    notes: updatedItem.notes
   }
 
   const { data, error } = await supabase.from('playlogs').update(cleansedUpdate).eq('id', id).select().single();

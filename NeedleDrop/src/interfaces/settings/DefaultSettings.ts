@@ -13,7 +13,8 @@ export const DefaultSettings: UserSettings = {
     date: true,
     listeners: true,
     artist: true,
-    album: true
+    album: true,
+    notes: false
   },
   vinyls: {
     purchaseNumber: true,

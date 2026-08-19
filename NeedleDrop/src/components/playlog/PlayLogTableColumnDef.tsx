@@ -46,4 +46,8 @@ export const PlayLogTableColumnDef = [
       return value?.map((u: User) => u.name).join(', ') ?? '';
     },
   }),
+  columnHelper.accessor('notes', {
+    header: 'Notes',
+    cell: info => info.getValue(),
+  }),
 ];

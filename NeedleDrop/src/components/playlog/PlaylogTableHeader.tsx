@@ -29,5 +29,9 @@ export const playlogColumns = [
   columnHelper.accessor("listeners", {
     header: "Listeners",
     cell: (info) => info.getValue()?.map(u => u.name).join(', ') ?? ''
-  })
+  }),
+  columnHelper.accessor('notes', {
+    header: 'Notes',
+    cell: info => info.getValue(),
+  }),
 ]
