@@ -1,8 +1,8 @@
+import ColumnFilterButton from "@components/ui/tables/ColumnFilterButton";
+import ColumnVisibilityButton from "@components/ui/tables/ColumnVisibilityButton";
 import DataTablePage from "@components/ui/DataTablePage"
 import PlayLogTable from "@components/playlog/PlayLogTable"
-import ColumnVisibilityButton from "@components/ui/tables/ColumnVisibilityButton";
-import { playlogColumns } from "@components/playlog/PlaylogTableHeader";
-import ColumnFilterButton from "@components/ui/tables/ColumnFilterButton";
+import { PlayLogTableColumnDef } from "@components/playlog/PlayLogTableColumnDef";
 import SuspenseTableWrapper from "@components/ui/SuspenseTableWrapper";
 
 const PlaylogsPage = () => {
@@ -12,10 +12,10 @@ const PlaylogsPage = () => {
       headerActions={(
         <>
           <ColumnVisibilityButton
-            columns={playlogColumns}
+            columns={PlayLogTableColumnDef}
             settingsColumn="playlogs"
           />
-          <ColumnFilterButton columns={playlogColumns} />
+          <ColumnFilterButton columns={PlayLogTableColumnDef} />
         </>
       )}
     >

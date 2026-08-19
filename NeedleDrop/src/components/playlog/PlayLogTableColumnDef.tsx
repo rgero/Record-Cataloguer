@@ -1,3 +1,4 @@
+import { Checkbox } from "@mui/material";
 import type { PlayLog } from "@interfaces/PlayLog";
 import type { User } from '@interfaces/User';
 import { createColumnHelper } from "@tanstack/react-table";
@@ -40,14 +41,25 @@ export const PlayLogTableColumnDef = [
   }),
   columnHelper.accessor("listeners", {
     header: "Listeners",
-    // Logic from valueGetter is moved here
     cell: (info) => {
       const value = info.getValue();
       return value?.map((u: User) => u.name).join(', ') ?? '';
     },
   }),
-  columnHelper.accessor('notes', {
-    header: 'Notes',
-    cell: info => info.getValue(),
+  columnHelper.accessor("notes", {
+    header: "Notes",
+    cell: ({ getValue }) => {
+      const value = getValue();
+      const hasNotes = typeof value === 'string' && value.trim() !== '';      
+      return (
+        <Checkbox
+          checked={hasNotes}
+          disabled
+        />
+      );
+    },
+    meta: {
+      filterVariant: "boolean",
+    }
   }),
 ];

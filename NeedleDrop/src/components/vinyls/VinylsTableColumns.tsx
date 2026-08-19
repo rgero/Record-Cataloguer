@@ -1,4 +1,5 @@
 import { type Vinyl } from "@interfaces/Vinyl";
+import { Checkbox } from "@mui/material";
 import { createColumnHelper } from "@tanstack/react-table";
 import { stripArticles } from "@utils/StripArticles";
 
@@ -90,7 +91,20 @@ const vinylColumns = [
   }),
   columnHelper.accessor("notes", {
     header: "Notes",
-    cell: info => info.getValue(),
+    cell: ({ getValue }) => {
+      const value = getValue();
+      const hasNotes = typeof value === 'string' && value.trim() !== '';
+
+      return (
+        <Checkbox
+          checked={hasNotes}
+          disabled
+        />
+      );
+    },
+    meta: {
+      filterVariant: "boolean",
+    }
   }),
   columnHelper.accessor("color", {
     header: "Color",

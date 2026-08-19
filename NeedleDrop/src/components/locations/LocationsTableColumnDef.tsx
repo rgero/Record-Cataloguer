@@ -1,3 +1,4 @@
+import { Checkbox } from "@mui/material";
 import type { Location } from "@interfaces/Location";
 import { createColumnHelper } from "@tanstack/react-table";
 
@@ -44,6 +45,19 @@ export const LocationTableColumnDef = [
   }),
   columnHelper.accessor("notes", {
     header: "Notes",
-    cell: (info) => info.getValue(),
+    cell: ({ getValue }) => {
+      const value = getValue();
+      const hasNotes = typeof value === 'string' && value.trim() !== '';
+
+      return (
+        <Checkbox
+          checked={hasNotes}
+          disabled
+        />
+      );
+    },
+    meta: {
+      filterVariant: "boolean",
+    }
   }),
 ];
