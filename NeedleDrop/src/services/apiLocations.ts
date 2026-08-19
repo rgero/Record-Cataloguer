@@ -2,7 +2,11 @@ import type { Location } from "@interfaces/Location";
 import supabase from "./supabase";
 
 export const getLocations = async () => {
-  const { data, error } = await supabase.from('locations').select('*');
+  const { data, error } = await supabase
+    .from('locations')
+    .select('*, vinyls!purchaseLocation(count)')
+    .eq('vinyls.archived', false);
+
   if (error) {
     console.error(error);
     throw new Error(error.message);
@@ -11,13 +15,22 @@ export const getLocations = async () => {
     throw new Error("No location data returned");
   }
 
-  const locations = data as Location[];
-  const totalPurchases = locations.reduce((sum: number, loc: Location) => sum + (loc.purchaseCount || 0), 0);
-  return locations.map((loc: Location) => ({
+  const locations = data.map((loc: any) => ({
     ...loc,
-    percentage: totalPurchases > 0 ? ((loc.purchaseCount || 0) / totalPurchases) * 100 : 0,
+    purchaseCount: loc.vinyls?.[0]?.count ?? 0,
   }));
-}
+
+  const totalPurchases = locations.reduce(
+    (sum: number, loc: any) => sum + loc.purchaseCount,
+    0
+  );
+
+  return locations.map((loc: any) => ({
+    ...loc,
+    percentage:
+      totalPurchases > 0 ? (loc.purchaseCount / totalPurchases) * 100 : 0,
+  }));
+};
 
 export const updateLocation = async (id: number, updatedItem: Partial<Location>): Promise<void> => {
   const { error } = await supabase.from("locations").update(updatedItem).eq("id", id);

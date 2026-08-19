@@ -13,17 +13,14 @@ export const LocationProvider: React.FC<{ children: React.ReactNode }> = ({ chil
   const {data: locations = [], error, isLoading, isFetching} = useQuery({queryKey: ["locations"], queryFn: getLocations, placeholderData: (previousData) => previousData});
 
   useEffect(() => {
-    const channel = supabase.channel('locations-realtime').on(
-        'postgres_changes',
-        {
-          event: '*', // Listen for ALL changes (INSERT, UPDATE, DELETE)
-          schema: 'public',
-          table: 'locations',
-        },
-        () => {
-          queryClient.invalidateQueries({ queryKey: ["locations"] });
-        }
-      )
+    const invalidateLocations = () => {
+      queryClient.invalidateQueries({ queryKey: ["locations"] });
+    };
+
+    const channel = supabase
+      .channel('locations-realtime')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'locations' }, invalidateLocations)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'vinyls' }, invalidateLocations)
       .subscribe();
 
     return () => {

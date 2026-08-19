@@ -32,10 +32,12 @@ const hydrateVinylData = async (rawVinyls: any[]): Promise<Vinyl[]> => {
     const rawLikedBy = v.likedBy ?? v.liked_by;
     const rawLocation = v.purchaseLocation ?? v.purchase_location;
 
+    const dynamicPlayCount = v.playlogs?.[0]?.count ?? v.playCount ?? v.play_count ?? 0;
+
     return {
       ...v,
       purchaseNumber: v.purchaseNumber ?? v.purchase_number,
-      playCount: v.playCount ?? v.play_count,
+      playCount: dynamicPlayCount,
       doubleLP: v.doubleLP ?? v.double_lp,
       imageUrl: v.imageUrl ?? v.image_url,
       
@@ -51,7 +53,7 @@ const hydrateVinylData = async (rawVinyls: any[]): Promise<Vinyl[]> => {
 export const getVinyls = async (): Promise<Vinyl[]> => {
   const { data: vinyls, error } = await supabase
     .from("ordered_vinyls")
-    .select('*,"purchaseNumber"')
+    .select('*, "purchaseNumber", playlogs(count)')
     .order("created_at", { ascending: true });
 
   if (error) {
@@ -81,7 +83,6 @@ export const getUnplayedVinyls = async (userId?: string): Promise<Vinyl[]> => {
 export const createVinyl = async (newItem: Omit<Vinyl, 'id'>): Promise<void> => {
   const payload = {
     ...newItem,
-    playCount: 0,
     tags: newItem.tags?.map(t => t.trim().toLowerCase()) || [],
     purchaseDate: newItem.purchaseDate ? format(newItem.purchaseDate, "yyyy-MM-dd") : null,
     owners: newItem.owners.map((o) => o.id),

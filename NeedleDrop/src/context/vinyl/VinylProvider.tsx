@@ -7,8 +7,8 @@ import { VinylContext } from "./VinylContext";
 import { getVinyls } from "@services/apiVinyls";
 import supabase from "@services/supabase";
 import { useAuthenticationContext } from "@context/authentication/AuthenticationContext";
-import { useUserContext } from "@context/users/UserContext";
 import { useEffect } from "react";
+import { useUserContext } from "@context/users/UserContext";
 import { vinylPriceOwnerShare } from "@utils/vinylPriceOwnerShare";
 
 export const VinylProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -28,12 +28,24 @@ export const VinylProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     const channel = supabase.channel('vinyls-realtime').on(
         'postgres_changes',
         {
-          event: '*', // Listen for ALL changes (INSERT, UPDATE, DELETE)
+          event: '*',
           schema: 'public',
           table: 'vinyls',
         },
         () => {
           queryClient.invalidateQueries({ queryKey: ["vinyls"] });
+          queryClient.invalidateQueries({ queryKey: ["unplayed_vinyls"] });
+        }
+      ).on(
+        'postgres_changes',
+        {
+          event: '*',
+          schema: 'public',
+          table: 'playlogs'
+        },
+        () => {
+          queryClient.invalidateQueries({ queryKey: ["vinyls"] });
+          queryClient.invalidateQueries({ queryKey: ["unplayed_vinyls"] });
         }
       )
       .subscribe();
