@@ -41,8 +41,9 @@ const FeedbackForm = () => {
     <Container>
       <Stack spacing={2} sx={{paddingTop: 1}}>
         <TextField
-          id="outlined-controlled suggestion"
+          id="suggestion"
           label="Suggestion"
+          variant="filled"
           placeholder="Enter your suggestion here"
           fullWidth
           value={title}
@@ -54,8 +55,9 @@ const FeedbackForm = () => {
         />
         <div>
           <TextField
-            id="outlined-controlled details"
+            id="details"
             label="Additional Details"
+            variant="filled"
             placeholder="Enter any additional details here (optional)"
             fullWidth
             multiline

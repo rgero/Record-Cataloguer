@@ -17,7 +17,16 @@ const DarkModeProvider = ({ children }: {children: React.ReactNode}) => {
       createTheme({
         palette: {
           mode,
-        }
+        },
+        components: {
+          MuiDialog: {
+            styleOverrides: {
+              paper: {
+                backgroundColor: mode === "dark" ? "#010101" : undefined,
+              },
+            },
+          },
+        },
       }),
     [mode]
   );
