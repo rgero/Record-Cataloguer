@@ -8,9 +8,17 @@ const { mockUseMediaQuery } = vi.hoisted(() => ({
   mockUseMediaQuery: vi.fn(() => false),
 }));
 
+const { mockUseUserContext } = vi.hoisted(() => ({
+  mockUseUserContext: vi.fn(() => ({ isEditor: true })),
+}));
+
 vi.mock("@mui/material", async () => ({
   ...(await vi.importActual<typeof import("@mui/material")>("@mui/material")),
   useMediaQuery: mockUseMediaQuery,
+}));
+
+vi.mock("@context/users/UserContext", () => ({
+  useUserContext: mockUseUserContext,
 }));
 
 vi.mock("@components/ui/DataTablePage", () => ({
@@ -62,6 +70,7 @@ const renderPage = (initialEntry = "/vinyls") => render(
 describe("VinylsPage view selection", () => {
   beforeEach(() => {
     mockUseMediaQuery.mockReturnValue(false);
+    mockUseUserContext.mockReturnValue({ isEditor: true });
   });
 
   it("defaults to all vinyls for a missing or invalid view parameter", () => {
@@ -76,6 +85,17 @@ describe("VinylsPage view selection", () => {
 
     expect(screen.getByRole("heading", { name: "Unplayed" })).toBeInTheDocument();
     expect(screen.getByTestId("unplayed-vinyls-table")).toBeInTheDocument();
+  });
+
+  it("falls back to all vinyls for a non-editor on an editor-only view", () => {
+    mockUseUserContext.mockReturnValue({ isEditor: false });
+
+    renderPage("/vinyls?view=unplayed");
+
+    expect(screen.getByRole("heading", { name: "Vinyls" })).toBeInTheDocument();
+    expect(screen.getByTestId("all-vinyls-table")).toBeInTheDocument();
+    expect(screen.queryByTestId("unplayed-vinyls-table")).not.toBeInTheDocument();
+    expect(screen.queryByTitle("Show unplayed only")).not.toBeInTheDocument();
   });
 
   it("preserves filters when selecting a view", async () => {
