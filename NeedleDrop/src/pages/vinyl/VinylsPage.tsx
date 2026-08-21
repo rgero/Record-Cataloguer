@@ -10,19 +10,33 @@ import SuspenseTableWrapper from "@components/ui/SuspenseTableWrapper";
 import UnplayedVinylsTable from "@components/vinyls/UnplayedVinylsTable";
 import UserVinylsTable from "@components/vinyls/UserVinylsTable";
 import VinylsTable from "@components/vinyls/VinylsTable";
+import { useSearchParams } from "react-router-dom";
 import { useState } from "react";
 import vinylColumns from "@components/vinyls/VinylsTableColumns";
 
+type VinylViewMode = "all" | "unplayed" | "user";
+
 const VinylsPage = () => {
-  const [viewMode, setViewMode] = useState<"all" | "unplayed" | "user">("all");
+  const [searchParams, setSearchParams] = useSearchParams();
   const [menuAnchorEl, setMenuAnchorEl] = useState<HTMLElement | null>(null);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
+  const viewParam = searchParams.get("view");
+  const viewMode: VinylViewMode = viewParam === "unplayed" || viewParam === "user" ? viewParam : "all";
   const showUnplayed = viewMode === "unplayed";
   const showUserVinyls = viewMode === "user";
 
   const toggleViewMode = (mode: "unplayed" | "user") => {
-    setViewMode(viewMode === mode ? "all" : mode);
+    const nextParams = new URLSearchParams(searchParams);
+    const nextViewMode = viewMode === mode ? "all" : mode;
+
+    if (nextViewMode === "all") {
+      nextParams.delete("view");
+    } else {
+      nextParams.set("view", nextViewMode);
+    }
+
+    setSearchParams(nextParams, { replace: true });
     setMenuAnchorEl(null);
   };
 
