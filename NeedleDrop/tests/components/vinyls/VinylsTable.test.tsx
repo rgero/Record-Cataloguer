@@ -54,9 +54,12 @@ vi.mock("@components/ui/tables/ReactTable", () => ({
   ),
 }));
 
+const initialVinyls = mockVinylContext.vinyls;
+
 describe("VinylsTable", () => {
   beforeEach(() => {
     vi.clearAllMocks();
+    mockVinylContext.vinyls = initialVinyls;
   });
 
   it("renders the table with vinyl data", () => {
@@ -85,7 +88,7 @@ describe("VinylsTable", () => {
 
     render(<VinylsTable />);
 
-    expect(screen.getByText("0 records")).toBeInTheDocument();
+    expect(screen.getByText("No Vinyls added yet!")).toBeInTheDocument();
   });
 
   it("uses checkIsComplete utility for row styling", () => {
