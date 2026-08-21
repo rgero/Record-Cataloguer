@@ -1,4 +1,5 @@
 import type { Location } from "./Location";
+import type { PlayLog } from "./PlayLog";
 import type { User } from "./User";
 
 export interface Vinyl {
@@ -20,6 +21,7 @@ export interface Vinyl {
   doubleLP: boolean;
   tags: string[];
   archived?: boolean;
+  playlogs?: PlayLog[];
 }
 
 export interface VinylDbPayload extends Omit<Partial<Vinyl>, 'owners' | 'likedBy' | 'purchaseLocation' | 'purchaseDate' | 'purchasedBy'> {

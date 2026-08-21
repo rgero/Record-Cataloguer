@@ -117,8 +117,10 @@ export const createVinyl = async (newItem: Omit<Vinyl, 'id'>): Promise<void> => 
 };
 
 export const updateVinyl = async (id: number, updatedItem: Partial<Vinyl>): Promise<void> => {
-  const { purchaseDate, purchasedBy, owners, likedBy, purchaseLocation, purchaseNumber, tags, ...rest } = updatedItem;
+  const { purchaseDate, purchasedBy, owners, likedBy, purchaseLocation, purchaseNumber, playCount, playlogs, tags, ...rest } = updatedItem;
   void purchaseNumber;
+  void playCount;
+  void playlogs;
 
   const payload: Partial<VinylDbPayload> = { 
     ...rest,
