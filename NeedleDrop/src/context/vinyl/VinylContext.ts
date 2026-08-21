@@ -5,6 +5,7 @@ import type { Vinyl } from "@interfaces/Vinyl";
 export interface VinylContextType {
   vinyls : Vinyl[];
   unplayedVinyls: Vinyl[];
+  userVinyls: Vinyl[];
   error: Error | null;
   isLoading: boolean;
   isFetching: boolean;

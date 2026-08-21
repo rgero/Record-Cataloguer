@@ -1,4 +1,4 @@
-import {createVinyl as createVinylAPI, deleteVinyl as deleteVinylAPI, getUnplayedVinyls, updateVinyl as updateVinylAPI} from "@services/apiVinyls";
+import {createVinyl as createVinylAPI, deleteVinyl as deleteVinylAPI, getUnplayedVinyls, getVinylsByUserId, updateVinyl as updateVinylAPI} from "@services/apiVinyls";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { RoundNumber } from "@utils/RoundNumber";
@@ -24,6 +24,13 @@ export const VinylProvider: React.FC<{ children: React.ReactNode }> = ({ childre
     placeholderData: (previousData) => previousData
   });
 
+  const {data: userVinyls = [], error: userVinylError, isLoading: userVinylLoading, isFetching: userVinylFetching} = useQuery({
+    queryKey: ["user_vinyls", user?.id],
+    enabled: !!user?.id,
+    queryFn: () => getVinylsByUserId(user!.id),
+    placeholderData: (previousData) => previousData
+  });
+
   useEffect(() => {
     const channel = supabase.channel('vinyls-realtime').on(
         'postgres_changes',
@@ -35,6 +42,7 @@ export const VinylProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         () => {
           queryClient.invalidateQueries({ queryKey: ["vinyls"] });
           queryClient.invalidateQueries({ queryKey: ["unplayed_vinyls"] });
+          queryClient.invalidateQueries({ queryKey: ["user_vinyls"] });
         }
       ).on(
         'postgres_changes',
@@ -46,6 +54,7 @@ export const VinylProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         () => {
           queryClient.invalidateQueries({ queryKey: ["vinyls"] });
           queryClient.invalidateQueries({ queryKey: ["unplayed_vinyls"] });
+          queryClient.invalidateQueries({ queryKey: ["user_vinyls"] });
         }
       )
       .subscribe();
@@ -144,6 +153,7 @@ export const VinylProvider: React.FC<{ children: React.ReactNode }> = ({ childre
       value={{
         vinyls,
         unplayedVinyls,
+        userVinyls,
         getVinylById,
         createVinyl,
         getVinylsOwnedByUserId,
@@ -153,9 +163,9 @@ export const VinylProvider: React.FC<{ children: React.ReactNode }> = ({ childre
         calculateTotalPrice,
         updateVinyl,
         deleteVinyl,
-        error: error || unplayedError,
-        isLoading: isLoading || unplayedLoading,
-        isFetching: isFetching || unplayedFetching
+        error: error || unplayedError || userVinylError,
+        isLoading: isLoading || unplayedLoading || userVinylLoading,
+        isFetching: isFetching || unplayedFetching || userVinylFetching
       }}
     >
       {children}

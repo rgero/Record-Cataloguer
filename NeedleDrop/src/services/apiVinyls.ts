@@ -67,6 +67,24 @@ export const getVinyls = async (): Promise<Vinyl[]> => {
   return hydrateVinylData(vinyls);
 };
 
+export const getVinylsByUserId = async (userId: string): Promise<Vinyl[]> => {
+  const { data: vinyls, error } = await supabase
+    .from("ordered_vinyls")
+    .select('*, "purchaseNumber", playlogs(count)')
+    .contains("playlogs.listeners", [userId])
+    .order("created_at", { ascending: true });
+
+  if (error) {
+    console.error(error);
+    throw error;
+  }
+  if (!vinyls) {
+    throw new Error("No vinyl data returned");
+  }
+
+  return hydrateVinylData(vinyls);
+};
+
 export const getUnplayedVinyls = async (userId?: string): Promise<Vinyl[]> => {
   if (!userId) return []; 
   

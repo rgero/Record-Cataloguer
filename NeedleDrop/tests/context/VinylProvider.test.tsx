@@ -1,7 +1,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { act, render, waitFor } from "@testing-library/react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
-import { createVinyl, deleteVinyl, getUnplayedVinyls, getVinyls, updateVinyl } from "@services/apiVinyls";
+import { createVinyl, deleteVinyl, getUnplayedVinyls, getVinyls, getVinylsByUserId, updateVinyl } from "@services/apiVinyls";
 
 import { DefaultSettings } from "@interfaces/settings/DefaultSettings";
 import { VinylProvider } from "@context/vinyl/VinylProvider";
@@ -28,6 +28,7 @@ vi.mock("@services/apiVinyls", () => ({
   deleteVinyl: vi.fn(),
   getUnplayedVinyls: vi.fn(),
   getVinyls: vi.fn(),
+  getVinylsByUserId: vi.fn(),
   updateVinyl: vi.fn(),
 }));
 
@@ -48,6 +49,7 @@ vi.mock("@context/users/UserContext", () => ({
 
 const mockedGetUnplayedVinyls = getUnplayedVinyls as unknown as ReturnType<typeof vi.fn>;
 const mockedGetVinyls = getVinyls as unknown as ReturnType<typeof vi.fn>;
+const mockedGetVinylsByUserId = getVinylsByUserId as unknown as ReturnType<typeof vi.fn>;
 const mockedCreateVinyl = createVinyl as unknown as ReturnType<typeof vi.fn>;
 const mockedUpdateVinyl = updateVinyl as unknown as ReturnType<typeof vi.fn>;
 const mockedDeleteVinyl = deleteVinyl as unknown as ReturnType<typeof vi.fn>;
@@ -75,6 +77,7 @@ describe("VinylProvider realtime updates", () => {
     handlers.length = 0;
     mockedGetUnplayedVinyls.mockResolvedValue([]);
     mockedGetVinyls.mockResolvedValue([]);
+    mockedGetVinylsByUserId.mockResolvedValue([]);
     mockedCreateVinyl.mockResolvedValue(undefined);
     mockedUpdateVinyl.mockResolvedValue(undefined);
     mockedDeleteVinyl.mockResolvedValue(undefined);
@@ -82,7 +85,7 @@ describe("VinylProvider realtime updates", () => {
     mockedUseUserContext.mockReturnValue({ isEditor: true });
   });
 
-  it("invalidates vinyl and unplayed-vinyl queries when vinyls or playlogs change", async () => {
+  it("invalidates vinyl, user-vinyl, and unplayed-vinyl queries when vinyls or playlogs change", async () => {
     const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
     const invalidateQueries = vi.spyOn(queryClient, "invalidateQueries");
 
@@ -100,9 +103,10 @@ describe("VinylProvider realtime updates", () => {
 
     handlers.forEach(({ callback }) => callback());
 
-    expect(invalidateQueries).toHaveBeenCalledTimes(4);
+    expect(invalidateQueries).toHaveBeenCalledTimes(6);
     expect(invalidateQueries).toHaveBeenCalledWith({ queryKey: ["vinyls"] });
     expect(invalidateQueries).toHaveBeenCalledWith({ queryKey: ["unplayed_vinyls"] });
+    expect(invalidateQueries).toHaveBeenCalledWith({ queryKey: ["user_vinyls"] });
   });
 
   it("loads vinyls and calculates ownership, purchase, and collection totals", async () => {
@@ -139,8 +143,10 @@ describe("VinylProvider realtime updates", () => {
       },
     ];
     const unplayedVinyls = [vinyls[1]];
+    const userVinyls = [vinyls[0]];
     mockedGetVinyls.mockResolvedValue(vinyls);
     mockedGetUnplayedVinyls.mockResolvedValue(unplayedVinyls);
+    mockedGetVinylsByUserId.mockResolvedValue(userVinyls);
     const queryClient = new QueryClient({ defaultOptions: { queries: { retry: false } } });
 
     renderProvider(queryClient);
@@ -148,6 +154,7 @@ describe("VinylProvider realtime updates", () => {
     await waitFor(() => expect(vinylContext.vinyls).toEqual(vinyls));
 
     expect(vinylContext.unplayedVinyls).toEqual(unplayedVinyls);
+  expect(vinylContext.userVinyls).toEqual(userVinyls);
     expect(vinylContext.getVinylById(1)).toEqual(vinyls[0]);
     expect(vinylContext.getVinylById(99)).toBeNull();
     expect(vinylContext.getVinylsOwnedByUserId("alice")).toEqual(vinyls.slice(0, 1));
