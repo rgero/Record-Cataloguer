@@ -1,24 +1,9 @@
-import Empty from "@components/ui/Empty";
-import ReactTable from "@components/ui/tables/ReactTable";
-import { checkComplete } from "./utils/CheckComplete";
+import VinylTableWrapper from "./ui/VinylTableWrapper";
 import { useVinylContext } from "@context/vinyl/VinylContext";
-import vinylColumns from "./VinylsTableColumns";
 
 const UnplayedVinylsTable = () => {
   const { unplayedVinyls } = useVinylContext();
-
-  if (unplayedVinyls.length === 0) {
-    return <Empty title="No Unplayed Vinyls!" />;
-  }
-
-  return (
-    <ReactTable
-      data={unplayedVinyls}
-      columns={vinylColumns}
-      settingsColumn="vinyls"
-      getRowSx={(row) => checkComplete(row)}
-    />
-  );
+  return <VinylTableWrapper vinyls={unplayedVinyls} title="No unplayed vinyls!" />
 };
 
 export default UnplayedVinylsTable;

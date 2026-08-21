@@ -18,7 +18,7 @@ const VinylsPage = () => {
 
   return (
     <DataTablePage
-      title={showUnplayed ? "Unplayed" : showUserVinyls ? "My Plays" : "Vinyls"}
+      title={showUnplayed ? "Unplayed" : showUserVinyls ? "Vinyls (mine)" : "Vinyls"}
       headerActions={(
         <>
           <IconButton 
