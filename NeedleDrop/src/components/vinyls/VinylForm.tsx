@@ -1,6 +1,6 @@
 import { Autocomplete, Box, Button, Checkbox, Chip, FormLabel, Grid, MenuItem, Select, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 import AlbumImagePresenter from "@components/ui/AlbumImagePresenter";
 import FloatingAction from "@components/ui/FloatingAction";
@@ -44,48 +44,42 @@ const emptyVinyl: VinylFormData = {
   tags: []
 };
 
-const VinylForm = () => {
-  const { id } = useParams();
+interface VinylFormProps {
+  vinyl?: Vinyl | null;
+}
+
+const VinylForm = ({ vinyl = null }: VinylFormProps) => {
   const { openDeleteDialog } = useDialogProvider();
-  const { isLoading, getVinylById, updateVinyl, createVinyl, deleteVinyl } = useVinylContext();
+  const { updateVinyl, createVinyl, deleteVinyl } = useVinylContext();
   const { isLoading: locationsLoading, locations } = useLocationContext();
   const { isLoading: usersLoading, editorUsers, isEditor } = useUserContext();
   const { deleteWantedItem } = useWantedItemContext();
   const navigate = useNavigate();
   const location = useLocation();
 
-  const isCreateMode = !id || id === 'new';
-  const isFormLoading = useCombinedLoading([isLoading, locationsLoading, usersLoading]);
+  const isCreateMode = !vinyl;
+  const isFormLoading = useCombinedLoading([locationsLoading, usersLoading]);
 
   const [inEdit, setIsInEdit] = useState<boolean>(isCreateMode);
   const [formData, setFormData] = useState<VinylFormData | null>(() => {
-    if (isCreateMode) {
+    if (!vinyl) {
       const state = location.state as { fromWantItem?: Partial<VinylFormData> } | null;
       const transferredData = state?.fromWantItem;
       return { ...emptyVinyl, ...transferredData };
     }
-    return null;
+    return vinyl;
   });
   const [errors, setErrors] = useState<VinylFormErrors>({});
   
   const [deleteFromWanted, setDeleteFromWanted] = useState<boolean>(false);
 
-  const currentVinyl = !isCreateMode ? getVinylById(Number(id)) : null;
-
   useEffect(() => {
-    if (!isCreateMode && currentVinyl && !formData) {
-      setFormData(currentVinyl);
+    if (vinyl) {
+      setFormData(vinyl);
+      setIsInEdit(false);
+      setErrors({});
     }
-  }, [currentVinyl, isCreateMode, formData]);
-
-  useEffect(() => {
-    if (!isCreateMode && !isFormLoading && !currentVinyl) {
-      toast.error("The requested vinyl record could not be found.", {
-        id: "missing-vinyl-error",
-      });
-      navigate("/vinyls", { replace: true });
-    }
-  }, [isCreateMode, isFormLoading, currentVinyl, navigate]);
+  }, [vinyl]);
 
   const validateForm = () => {
     const nextErrors: VinylFormErrors = {};
@@ -133,7 +127,9 @@ const VinylForm = () => {
         toast.success("Vinyl created successfully!");
         navigate(`/vinyls`);
       } else {
-        await updateVinyl(Number(id), vinylData);
+        if (vinyl.id === undefined) return;
+
+        await updateVinyl(vinyl.id, vinylData);
         setIsInEdit(false);
         toast.success("Vinyl updated successfully!");
       }
@@ -144,8 +140,10 @@ const VinylForm = () => {
   };
 
   const handleConfirmDelete = async () => {
+    if (!vinyl || vinyl.id === undefined) return;
+
     try {
-      await deleteVinyl(Number(id));
+      await deleteVinyl(vinyl.id);
       toast.success("Vinyl deleted.");
       navigate("/vinyls");
     } catch (error) {
@@ -158,7 +156,7 @@ const VinylForm = () => {
     if (isCreateMode) {
       navigate(-1);
     } else {
-      setFormData(currentVinyl);
+      setFormData(vinyl);
       setIsInEdit(false);
     }
   };

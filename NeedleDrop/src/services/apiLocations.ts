@@ -32,8 +32,9 @@ export const getLocations = async () => {
   }));
 };
 
-export const updateLocation = async (id: number, updatedItem: Partial<Location>): Promise<void> => {
-  const { error } = await supabase.from("locations").update(updatedItem).eq("id", id);
+export const updateLocation = async (id: number, updatedItem: Partial<Location> & { vinyls?: unknown }): Promise<void> => {
+  const {purchaseCount: _purchaseCount, vinyls: _vinyls, ...locationData} = updatedItem;
+  const { error } = await supabase.from("locations").update(locationData).eq("id", id);
   if (error) {
     console.error("Error updating location:", error);
     throw new Error(error.message);

@@ -1,6 +1,5 @@
 import { Autocomplete, Box, Button, FormLabel, Grid, TextField, Typography } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
 
 import FloatingAction from "@components/ui/FloatingAction";
 import FormHeader from "@components/ui/FormHeader";
@@ -9,6 +8,7 @@ import { format } from 'date-fns';
 import toast from "react-hot-toast";
 import useCombinedLoading from "@hooks/useCombinedLoading";
 import { useDialogProvider } from "@context/dialog/DialogContext";
+import { useNavigate } from "react-router-dom";
 import { usePlaylogContext } from "@context/playlogs/PlaylogContext";
 import { useUserContext } from "@context/users/UserContext";
 import { useVinylContext } from "@context/vinyl/VinylContext";
@@ -26,38 +26,32 @@ const emptyPlaylog: PlaylogFormModel = {
   notes: "",
 };
 
-const PlaylogForm = () => {
-  const { id } = useParams();
+interface PlaylogFormProps {
+  playlog?: PlaylogFormModel | null;
+}
+
+const PlaylogForm = ({ playlog = null }: PlaylogFormProps) => {
   const { openDeleteDialog } = useDialogProvider();
-  const { isLoading, getPlaylogById, updatePlaylog, createPlaylog, deletePlaylog } = usePlaylogContext();
+  const { updatePlaylog, createPlaylog, deletePlaylog } = usePlaylogContext();
   const { isLoading: isVinylLoading, vinyls = [], getVinylById } = useVinylContext();
   const { isLoading: usersLoading, editorUsers, isEditor } = useUserContext();
   const navigate = useNavigate();
 
-  const isCreateMode = !id || id === 'new';
+  const isCreateMode = !playlog;
 
-  const isFormLoading = useCombinedLoading([isLoading, usersLoading]);
+  const isFormLoading = useCombinedLoading([usersLoading]);
 
   const [inEdit, setIsInEdit] = useState<boolean>(isCreateMode);
-  const [formData, setFormData] = useState<PlaylogFormModel | null>(isCreateMode ? emptyPlaylog : null);
+  const [formData, setFormData] = useState<PlaylogFormModel | null>(playlog ?? emptyPlaylog);
   const [errors, setErrors] = useState<PlaylogFormErrors>({});
 
-  const currentPlaylog = !isCreateMode ? getPlaylogById(Number(id)) : null;
-
   useEffect(() => {
-    if (!isCreateMode && currentPlaylog && !formData) {
-      setFormData(currentPlaylog);
+    if (playlog) {
+      setFormData(playlog);
+      setIsInEdit(false);
+      setErrors({});
     }
-  }, [currentPlaylog, isCreateMode, formData]);
-
-  useEffect(() => {
-    if (!isCreateMode && !isFormLoading && !currentPlaylog) {
-      toast.error("The requested playlog could not be found.", {
-        id: "missing-play-error",
-      });
-      navigate("/plays", { replace: true });
-    }
-  }, [isCreateMode, isFormLoading, currentPlaylog, navigate]);
+  }, [playlog]);
 
   // Find the full vinyl object safely using the context helper method (which searches archived items too)
   const selectedVinyl = useMemo(() => {
@@ -85,7 +79,7 @@ const PlaylogForm = () => {
   };
 
   if (isVinylLoading) return <Typography sx={{ p: 4 }}>Loading collection...</Typography>;
-  if (!isCreateMode && (isLoading || usersLoading || !formData)) return <Typography sx={{ p: 4 }}>Loading playlog...</Typography>;
+  if (!isCreateMode && (isFormLoading || !formData)) return <Typography sx={{ p: 4 }}>Loading playlog...</Typography>;
   if (!formData) return null;
 
   const handleSave = async () => {
@@ -103,7 +97,8 @@ const PlaylogForm = () => {
         toast.success("Playlog created successfully!");
         navigate(`/plays`);
       } else {
-        await updatePlaylog(Number(id), payload);
+        if (playlog.id === undefined) return;
+        await updatePlaylog(playlog.id, payload);
         setIsInEdit(false);
         toast.success("Playlog updated successfully!");
       }
@@ -114,8 +109,10 @@ const PlaylogForm = () => {
   };
 
   const handleConfirmDelete = async () => {
+    if (!playlog || playlog.id === undefined) return;
+
     try {
-      await deletePlaylog(Number(id));
+      await deletePlaylog(playlog.id);
       toast.success("Playlog deleted.");
       navigate("/plays");
     } catch (error) {
@@ -128,7 +125,7 @@ const PlaylogForm = () => {
     if (isCreateMode) {
       navigate(-1);
     } else {
-      setFormData(currentPlaylog);
+      setFormData(playlog);
       setIsInEdit(false);
     }
   };

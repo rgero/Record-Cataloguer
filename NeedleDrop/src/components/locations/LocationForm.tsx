@@ -1,17 +1,15 @@
-import { Box, Button, FormLabel, Grid, MenuItem, Select, TextField, Typography } from "@mui/material";
+import { Box, Button, FormLabel, Grid, MenuItem, Select, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
 
 import { APIProvider } from "@vis.gl/react-google-maps";
 import { AddressSearchMap } from "./AddressSearchMap";
 import FloatingAction from "@components/ui/FloatingAction";
 import FormHeader from "@components/ui/FormHeader";
 import type { Location } from "@interfaces/Location";
-import SuspenseFormWrapper from "@components/ui/SuspenseFormWrapper";
 import toast from "react-hot-toast";
-import { useCombinedLoading } from "@hooks/useCombinedLoading";
 import { useDialogProvider } from "@context/dialog/DialogContext";
 import { useLocationContext } from "@context/location/LocationContext";
+import { useNavigate } from "react-router-dom";
 import { useUserContext } from "@context/users/UserContext";
 
 const emptyLocation: Location = {
@@ -25,23 +23,22 @@ type LocationFormErrors = {
   name?: string;
 };
 
-const LocationForm = () => {
-  const { id } = useParams();
+interface LocationFormProps {
+  location?: Location | null;
+}
+
+const LocationForm = ({ location = null }: LocationFormProps) => {
   const { openDeleteDialog } = useDialogProvider();
   const navigate = useNavigate();
   
-  // Mode detection
-  const isCreateMode = !id || id === 'new';
+  const isCreateMode = !location;
 
   const [inEdit, setIsInEdit] = useState<boolean>(isCreateMode);
-  const [formData, setFormData] = useState<Location | null>(isCreateMode ? emptyLocation : null);
+  const [formData, setFormData] = useState<Location | null>(location ?? emptyLocation);
   const [errors, setErrors] = useState<LocationFormErrors>({});
   
-  const { isLoading, getLocationById, updateLocation, createLocation, deleteLocation } = useLocationContext();
+  const { updateLocation, createLocation, deleteLocation } = useLocationContext();
   const { isEditor } = useUserContext();
-
-  const currentLocation = !isCreateMode ? getLocationById(Number(id)) : null;
-  const isFormLoading = useCombinedLoading([isLoading]);
 
   const validateForm = () => {
     const nextErrors: LocationFormErrors = {};
@@ -55,23 +52,12 @@ const LocationForm = () => {
   };
 
   useEffect(() => {
-    if (!isCreateMode && currentLocation && !formData) {
-      setFormData(currentLocation);
+    if (location) {
+      setFormData(location);
+      setIsInEdit(false);
+      setErrors({});
     }
-  }, [currentLocation, isCreateMode, formData]);
-
-  useEffect(() => {
-    if (!isCreateMode && !isFormLoading && !currentLocation) {
-      toast.error("The requested location could not be found.", {
-        id: "missing-location-error",
-      });
-      navigate("/locations", { replace: true });
-    }
-  }, [isCreateMode, isFormLoading, currentLocation, navigate]);
-
-  if (!isCreateMode && isFormLoading) {
-    return <SuspenseFormWrapper />;
-  }
+  }, [location]);
   if (!formData) return null;
 
   const handleAddressChange = (address: string) => {
@@ -95,7 +81,8 @@ const LocationForm = () => {
         navigate(`/locations`);
       } else {
         const { percentage, ...itemToUpdate } = formData;
-        await updateLocation(Number(id), itemToUpdate);
+        if (location.id === undefined) return;
+        await updateLocation(location.id, itemToUpdate);
         setIsInEdit(false);
         toast.success("Location updated successfully!");
       }
@@ -106,8 +93,10 @@ const LocationForm = () => {
   };
 
   const handleConfirmDelete = async () => {
+    if (!location || location.id === undefined) return;
+
     try {
-      await deleteLocation(Number(id));
+      await deleteLocation(location.id);
       toast.success("Location deleted.");
       navigate("/locations");
     } catch (error) {
@@ -120,7 +109,7 @@ const LocationForm = () => {
     if (isCreateMode) {
       navigate(-1);
     } else {
-      setFormData(currentLocation);
+      setFormData(location);
       setIsInEdit(false);
     }
   };

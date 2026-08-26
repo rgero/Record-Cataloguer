@@ -1,6 +1,5 @@
 import { Autocomplete, Box, Button, Chip, FormLabel, Grid, IconButton, MenuItem, Select, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
 
 import AlbumImagePresenter from "@components/ui/AlbumImagePresenter";
 import { DriveFileMove } from "@mui/icons-material";
@@ -11,6 +10,7 @@ import type { WantedItem } from "@interfaces/WantedItem";
 import toast from "react-hot-toast";
 import { useCombinedLoading } from "@hooks/useCombinedLoading";
 import { useDialogProvider } from "@context/dialog/DialogContext";
+import { useNavigate } from "react-router-dom";
 import { useUserContext } from "@context/users/UserContext";
 import { useWantedItemContext } from "@context/wanted/WantedItemContext";
 
@@ -30,21 +30,22 @@ const emptyWant : WantedItem = {
 }
 
 
-const WantItemForm = () => {
-  const { id } = useParams();
+interface WantItemFormProps {
+  wantedItem?: WantedItem | null;
+}
+
+const WantItemForm = ({ wantedItem = null }: WantItemFormProps) => {
   const navigate = useNavigate();
   const { openDeleteDialog } = useDialogProvider();
   const { isLoading: usersLoading, editorUsers, isEditor } = useUserContext();
-  const { isLoading, getWantedItemById, updateWantedItem, createWantedItem, deleteWantedItem } = useWantedItemContext();
+  const { updateWantedItem, createWantedItem, deleteWantedItem } = useWantedItemContext();
   
-  const isCreateMode = !id || id === 'new';
-  const isFormLoading = useCombinedLoading([isLoading, usersLoading]);
+  const isCreateMode = !wantedItem;
+  const isFormLoading = useCombinedLoading([usersLoading]);
 
   const [inEdit, setIsInEdit] = useState<boolean>(isCreateMode);
-  const [formData, setFormData] = useState<WantedItem | null>(isCreateMode ? emptyWant : null);
+  const [formData, setFormData] = useState<WantedItem | null>(wantedItem ?? emptyWant);
   const [errors, setErrors] = useState<WantItemFormErrors>({});
-
-  const wantedItem = getWantedItemById(Number(id));
 
   const validateForm = () => {
     const nextErrors: WantItemFormErrors = {};
@@ -62,19 +63,12 @@ const WantItemForm = () => {
   };
 
   useEffect(() => {
-    if (!isCreateMode && wantedItem && !formData) {
+    if (wantedItem) {
       setFormData(wantedItem);
+      setIsInEdit(false);
+      setErrors({});
     }
-  }, [wantedItem, isCreateMode, formData]);
-
-  useEffect(() => {
-    if (!isCreateMode && !isFormLoading && !wantedItem) {
-      toast.error("The requested wanted item could not be found.", {
-        id: "missing-want-error",
-      });
-      navigate("/wantlist", { replace: true });
-    }
-  }, [isCreateMode, isFormLoading, wantedItem, navigate]);
+  }, [wantedItem]);
 
   if (!isCreateMode && isFormLoading) {
     return <SuspenseFormWrapper><div>Loading...</div></SuspenseFormWrapper>;
@@ -94,7 +88,8 @@ const WantItemForm = () => {
         toast.success("Wanted Item created successfully!");
         navigate(`/wantlist`);
       } else {
-        await updateWantedItem(Number(id), formData);
+        if (wantedItem.id === undefined) return;
+        await updateWantedItem(wantedItem.id, formData);
         setIsInEdit(false);
         toast.success("Wanted Item updated successfully!");
       }
@@ -105,8 +100,10 @@ const WantItemForm = () => {
   };
 
   const handleConfirmDelete = async () => {
+    if (!wantedItem || wantedItem.id === undefined) return;
+
     try {
-      await deleteWantedItem(Number(id));
+      await deleteWantedItem(wantedItem.id);
       toast.success("Wanted item deleted.");
       navigate("/wantlist");
     } catch (error) {
@@ -125,10 +122,12 @@ const WantItemForm = () => {
   };
 
   const handleConvertToVinyl = () => {
+    if (!wantedItem || wantedItem.id === undefined) return;
+
     navigate("/vinyls/create", { 
       state: { 
         fromWantItem: {
-          wantedID: Number(id),
+          wantedID: wantedItem.id,
           artist: formData.artist,
           album: formData.album,
           notes: formData.notes,
