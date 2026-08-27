@@ -4,8 +4,9 @@ import { useEffect, useState } from "react";
 import { APIProvider } from "@vis.gl/react-google-maps";
 import { AddressSearchMap } from "./AddressSearchMap";
 import FloatingAction from "@components/ui/FloatingAction";
-import FormActions from "@components/ui/FormActions";
-import FormHeader from "@components/ui/FormHeader";
+import FormActions from "@components/ui/forms/FormActions";
+import FormAdornment from "@components/ui/forms/FormAdornment";
+import FormHeader from "@components/ui/forms/FormHeader";
 import type { Location } from "@interfaces/Location";
 import toast from "react-hot-toast";
 import { useDialogProvider } from "@context/dialog/DialogContext";
@@ -121,7 +122,7 @@ const LocationForm = ({ location = null }: LocationFormProps) => {
         <FormHeader
           isCreateMode={isCreateMode}
           rightAdornment={
-            <FormActions
+            <FormAdornment
               mode={isCreateMode ? "create" : "edit"}
               isEditing={inEdit}
               isEditor={isEditor}
@@ -192,6 +193,20 @@ const LocationForm = ({ location = null }: LocationFormProps) => {
               rows={4}
               disabled={!inEdit}
               placeholder="Add any specific details here..."
+            />
+          </Grid>
+
+          {/* Form Actions */}
+          <Grid size={12} sx={{ mt: 2 }}>
+            <FormActions
+              mode={isCreateMode ? "create" : "edit"}
+              isEditing={inEdit}
+              isEditor={isEditor}
+              onCancel={handleCancel}
+              onDelete={() => openDeleteDialog({ name: formData.name, type: "Location" }, handleConfirmDelete)}
+              onEdit={() => setIsInEdit(true)}
+              onSave={handleSave}
+              createLabel="Create Location"
             />
           </Grid>
 

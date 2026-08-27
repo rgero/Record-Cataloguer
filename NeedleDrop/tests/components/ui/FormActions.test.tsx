@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from "vitest";
 import { fireEvent, render, screen } from "@testing-library/react";
 
-import FormActions from "@components/ui/FormActions";
+import FormAdornment from "@components/ui/forms/FormAdornment";
 
 const createProps = () => ({
   onCancel: vi.fn(),
@@ -13,7 +13,7 @@ const createProps = () => ({
 describe("FormActions", () => {
   it("shows Edit and hides the action group before editing", () => {
     render(
-      <FormActions
+      <FormAdornment
         {...createProps()}
         mode="edit"
         isEditing={false}
@@ -31,7 +31,7 @@ describe("FormActions", () => {
     const props = createProps();
 
     render(
-      <FormActions
+      <FormAdornment
         {...props}
         mode="edit"
         isEditing={false}
@@ -48,7 +48,7 @@ describe("FormActions", () => {
     const props = createProps();
 
     render(
-      <FormActions
+      <FormAdornment
         {...props}
         mode="edit"
         isEditing={true}
@@ -70,7 +70,7 @@ describe("FormActions", () => {
     const props = createProps();
 
     render(
-      <FormActions
+      <FormAdornment
         {...props}
         mode="create"
         isEditing={true}
@@ -85,7 +85,7 @@ describe("FormActions", () => {
 
   it("disables Save when requested", () => {
     render(
-      <FormActions
+      <FormAdornment
         {...createProps()}
         mode="create"
         isEditing={true}

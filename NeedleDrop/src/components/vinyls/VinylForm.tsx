@@ -4,8 +4,9 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 import AlbumImagePresenter from "@components/ui/AlbumImagePresenter";
 import FloatingAction from "@components/ui/FloatingAction";
-import FormActions from "@components/ui/FormActions";
-import FormHeader from "@components/ui/FormHeader";
+import FormActions from "@components/ui/forms/FormActions";
+import FormAdornment from "@components/ui/forms/FormAdornment";
+import FormHeader from "@components/ui/forms/FormHeader";
 import SuspenseFormWrapper from "@components/ui/SuspenseFormWrapper";
 import type { Vinyl } from "@interfaces/Vinyl"
 import { format } from "date-fns";
@@ -167,7 +168,7 @@ const VinylForm = ({ vinyl = null }: VinylFormProps) => {
       <FormHeader
         isCreateMode={isCreateMode}
         rightAdornment={
-          <FormActions
+          <FormAdornment
             mode={isCreateMode ? "create" : "edit"}
             isEditing={inEdit}
             isEditor={isEditor}
@@ -455,6 +456,20 @@ const VinylForm = ({ vinyl = null }: VinylFormProps) => {
             />
           </Grid>
         )}
+
+        {/* Form Actions */}
+        <Grid size={12} sx={{ mt: 2 }}>
+          <FormActions
+            mode={isCreateMode ? "create" : "edit"}
+            isEditing={inEdit}
+            isEditor={isEditor}
+            onCancel={handleCancel}
+            onDelete={() => openDeleteDialog({ name: `${formData.artist} - ${formData.album}`, type: "Vinyl" }, handleConfirmDelete)}
+            onEdit={() => setIsInEdit(true)}
+            onSave={handleSave}
+            createLabel="Create Vinyl"
+          />
+        </Grid>
 
       </Grid>
       <FloatingAction fallbackPath="/vinyls" />

@@ -15,7 +15,7 @@ interface FormActionsProps {
   createLabel?: string;
 }
 
-const FormActions = ({mode, isEditing, isEditor, onCancel, onDelete, onEdit, onSave, saveDisabled = false, createLabel = "Create"}: FormActionsProps) => {
+const FormAdornment = ({mode, isEditing, isEditor, onCancel, onDelete, onEdit, onSave, saveDisabled = false, createLabel = "Create"}: FormActionsProps) => {
   return (
     <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
       {isEditor && (
@@ -78,4 +78,4 @@ const FormActions = ({mode, isEditing, isEditor, onCancel, onDelete, onEdit, onS
   );
 };
 
-export default FormActions;
+export default FormAdornment;

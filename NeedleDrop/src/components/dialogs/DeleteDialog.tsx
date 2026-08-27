@@ -26,7 +26,7 @@ const DeleteDialog = () => {
       <DialogActions sx={{ p: 2 }}>
         <Button onClick={closeDeleteDialog}>Cancel</Button>
         <Button onClick={handleConfirm} color="error" variant="contained">
-          Delete Permanently
+          Delete
         </Button>
       </DialogActions>
     </Dialog>

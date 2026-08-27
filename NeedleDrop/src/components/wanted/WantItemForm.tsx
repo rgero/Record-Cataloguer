@@ -4,8 +4,9 @@ import { useEffect, useState } from "react";
 import AlbumImagePresenter from "@components/ui/AlbumImagePresenter";
 import { DriveFileMove } from "@mui/icons-material";
 import FloatingAction from "@components/ui/FloatingAction";
-import FormActions from "@components/ui/FormActions";
-import FormHeader from "@components/ui/FormHeader";
+import FormActions from "@components/ui/forms/FormActions";
+import FormAdornment from "@components/ui/forms/FormAdornment";
+import FormHeader from "@components/ui/forms/FormHeader";
 import SuspenseFormWrapper from "@components/ui/SuspenseFormWrapper";
 import type { WantedItem } from "@interfaces/WantedItem";
 import toast from "react-hot-toast";
@@ -140,7 +141,7 @@ const WantItemForm = ({ wantedItem = null }: WantItemFormProps) => {
 
   const rightAdornment = (
     <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-      <FormActions
+      <FormAdornment
         mode={isCreateMode ? "create" : "edit"}
         isEditing={inEdit}
         isEditor={isEditor}
@@ -261,6 +262,20 @@ const WantItemForm = ({ wantedItem = null }: WantItemFormProps) => {
             <MenuItem value="Medium">Medium</MenuItem>
             <MenuItem value="High">High</MenuItem>
           </Select>
+        </Grid>
+
+        {/* Form Actions */}
+        <Grid size={12} sx={{ mt: 2 }}>
+          <FormActions
+            mode={isCreateMode ? "create" : "edit"}
+            isEditing={inEdit}
+            isEditor={isEditor}
+            onCancel={handleCancel}
+            onDelete={() => openDeleteDialog({ name: `${formData.artist} - ${formData.album}`, type: "Want Item" }, handleConfirmDelete)}
+            onEdit={() => setIsInEdit(true)}
+            onSave={handleSave}
+            createLabel="Create Wanted Item"
+          />
         </Grid>
       </Grid>
       <FloatingAction fallbackPath="/wantlist"/>

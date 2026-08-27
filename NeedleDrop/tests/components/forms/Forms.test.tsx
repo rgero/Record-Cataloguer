@@ -235,7 +235,7 @@ describe("PlaylogForm", () => {
 
     expect(screen.getByText(/Vinyl Record/i)).toBeInTheDocument();
     expect(screen.getByText(/Required to create a play/i)).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /create/i })).toBeDisabled();
+    expect(screen.getAllByRole("button", { name: /create/i })[1]).toBeDisabled();
   });
 });
 
@@ -243,7 +243,7 @@ describe("LocationForm", () => {
   it("shows validation errors when required fields are empty", async () => {
     render(<LocationForm />);
 
-    fireEvent.click(screen.getByRole("button", { name: /create location/i }));
+    fireEvent.click(screen.getAllByRole("button", { name: /create location/i })[1]);
 
     expect(mockLocationContext.createLocation).not.toHaveBeenCalled();
 
@@ -258,7 +258,7 @@ describe("VinylForm", () => {
   it("blocks save when artist and album are missing", async () => {
     render(<VinylForm />);
 
-    fireEvent.click(screen.getByRole("button", { name: /create/i }));
+    fireEvent.click(screen.getAllByRole("button", { name: /create/i })[1]);
 
     expect(mockVinylContext.createVinyl).not.toHaveBeenCalled();
 
@@ -303,7 +303,7 @@ describe("WantItemForm", () => {
   it("blocks save when artist and album are missing", async () => {
     render(<WantItemForm />);
 
-    fireEvent.click(screen.getByRole("button", { name: /create/i }));
+    fireEvent.click(screen.getAllByRole("button", { name: /create/i })[1]);
 
     expect(mockWantedItemContext.createWantedItem).not.toHaveBeenCalled();
 

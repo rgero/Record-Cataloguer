@@ -2,8 +2,9 @@ import { Autocomplete, Box, FormLabel, Grid, TextField, Typography } from "@mui/
 import { useEffect, useMemo, useState } from "react";
 
 import FloatingAction from "@components/ui/FloatingAction";
-import FormActions from "@components/ui/FormActions";
-import FormHeader from "@components/ui/FormHeader";
+import FormActions from "@components/ui/forms/FormActions";
+import FormAdornment from "@components/ui/forms/FormAdornment";
+import FormHeader from "@components/ui/forms/FormHeader";
 import type { PlayLog } from "@interfaces/PlayLog";
 import { format } from 'date-fns';
 import toast from "react-hot-toast";
@@ -136,7 +137,7 @@ const PlaylogForm = ({ playlog = null }: PlaylogFormProps) => {
       <FormHeader
         isCreateMode={isCreateMode}
         rightAdornment={
-          <FormActions
+          <FormAdornment
             mode={isCreateMode ? "create" : "edit"}
             isEditing={inEdit}
             isEditor={isEditor}
@@ -229,6 +230,24 @@ const PlaylogForm = ({ playlog = null }: PlaylogFormProps) => {
             disabled={!inEdit}
             multiline
             rows={4}
+          />
+        </Grid>
+
+        {/* Form Actions */}
+        <Grid size={12} sx={{ mt: 2 }}>
+          <FormActions
+            mode={isCreateMode ? "create" : "edit"}
+            isEditing={inEdit}
+            isEditor={isEditor}
+            onCancel={handleCancel}
+            onDelete={() => openDeleteDialog({
+              name: `${selectedVinyl?.artist || 'Unknown'} - ${selectedVinyl?.album || 'Unknown'}`,
+              type: "Playlog"
+            }, handleConfirmDelete)}
+            onEdit={() => setIsInEdit(true)}
+            onSave={handleSave}
+            saveDisabled={!formData.album_id}
+            createLabel="Create Play"
           />
         </Grid>
       </Grid>
