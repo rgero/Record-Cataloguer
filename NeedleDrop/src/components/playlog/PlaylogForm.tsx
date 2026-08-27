@@ -1,7 +1,8 @@
-import { Autocomplete, Box, Button, FormLabel, Grid, TextField, Typography } from "@mui/material";
+import { Autocomplete, Box, FormLabel, Grid, TextField, Typography } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 
 import FloatingAction from "@components/ui/FloatingAction";
+import FormActions from "@components/ui/FormActions";
 import FormHeader from "@components/ui/FormHeader";
 import type { PlayLog } from "@interfaces/PlayLog";
 import { format } from 'date-fns';
@@ -214,36 +215,20 @@ const PlaylogForm = ({ playlog = null }: PlaylogFormProps) => {
         </Grid>
 
         {/* Action Buttons */}
-        <Grid size={12} sx={{ display: 'flex', gap: 2, justifyContent: 'center', mt: 2 }}>
-          {inEdit ? (
-            <>
-              <Button variant="outlined" size="large" onClick={handleCancel}>Cancel</Button>
-              {!isCreateMode && (
-                <Button 
-                  variant="contained" 
-                  size="large" 
-                  onClick={() => openDeleteDialog({
-                    name: `${selectedVinyl?.artist || 'Unknown'} - ${selectedVinyl?.album || 'Unknown'}`, 
-                    type: "Playlog"
-                  }, handleConfirmDelete)} 
-                  color="error"
-                >
-                  Delete
-                </Button>
-              )}
-              <Button 
-                variant="contained" 
-                size="large" 
-                onClick={handleSave} 
-                color="success"
-                disabled={!formData.album_id}
-              >
-                {isCreateMode ? "Create" : "Save Changes"}
-              </Button>
-            </>
-          ) : (
-            isEditor ? <Button variant="contained" size="large" onClick={() => setIsInEdit(true)}>Edit</Button> : null
-          )}
+        <Grid size={12} sx={{ mt: 2 }}>
+          <FormActions
+            mode={isCreateMode ? "create" : "edit"}
+            isEditing={inEdit}
+            isEditor={isEditor}
+            onCancel={handleCancel}
+            onDelete={() => openDeleteDialog({
+              name: `${selectedVinyl?.artist || 'Unknown'} - ${selectedVinyl?.album || 'Unknown'}`,
+              type: "Playlog"
+            }, handleConfirmDelete)}
+            onEdit={() => setIsInEdit(true)}
+            onSave={handleSave}
+            saveDisabled={!formData.album_id}
+          />
         </Grid>
       </Grid>
       <FloatingAction fallbackPath="/plays" />

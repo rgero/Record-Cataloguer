@@ -1,9 +1,10 @@
-import { Autocomplete, Box, Button, Chip, FormLabel, Grid, IconButton, MenuItem, Select, TextField } from "@mui/material";
+import { Autocomplete, Box, Chip, FormLabel, Grid, IconButton, MenuItem, Select, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
 
 import AlbumImagePresenter from "@components/ui/AlbumImagePresenter";
 import { DriveFileMove } from "@mui/icons-material";
 import FloatingAction from "@components/ui/FloatingAction";
+import FormActions from "@components/ui/FormActions";
 import FormHeader from "@components/ui/FormHeader";
 import SuspenseFormWrapper from "@components/ui/SuspenseFormWrapper";
 import type { WantedItem } from "@interfaces/WantedItem";
@@ -250,31 +251,16 @@ const WantItemForm = ({ wantedItem = null }: WantItemFormProps) => {
 
 
         {/* Action Buttons */}
-        <Grid size={12} sx={{ display: 'flex', gap: 2, justifyContent: 'center', mt: 2 }}>
-          {inEdit ? (
-            <>
-              <Button variant="outlined" size="large" onClick={handleCancel}>
-                Cancel
-              </Button>
-              
-              {!isCreateMode && (
-                <Button variant="contained" size="large" onClick={() => openDeleteDialog({name: `${formData.artist} - ${formData.album}`, type: "Want Item"}, handleConfirmDelete)} color="error">
-                  Delete
-                </Button>
-              )}
-
-              <Button variant="contained" size="large" onClick={handleSave} color="success">
-                {isCreateMode ? "Create" : "Save Changes"}
-              </Button>
-
-            </>
-          ) : (
-            isEditor ? (
-              <Button variant="contained" size="large" onClick={() => setIsInEdit(true)}>
-                Edit
-              </Button>
-            ) : null
-          )}
+        <Grid size={12} sx={{ mt: 2 }}>
+          <FormActions
+            mode={isCreateMode ? "create" : "edit"}
+            isEditing={inEdit}
+            isEditor={isEditor}
+            onCancel={handleCancel}
+            onDelete={() => openDeleteDialog({ name: `${formData.artist} - ${formData.album}`, type: "Want Item" }, handleConfirmDelete)}
+            onEdit={() => setIsInEdit(true)}
+            onSave={handleSave}
+          />
           <FloatingAction fallbackPath="/wantlist"/>
         </Grid>
       </Grid>

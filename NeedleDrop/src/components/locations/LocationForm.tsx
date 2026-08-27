@@ -1,9 +1,10 @@
-import { Box, Button, FormLabel, Grid, MenuItem, Select, TextField } from "@mui/material";
+import { Box, FormLabel, Grid, MenuItem, Select, TextField } from "@mui/material";
 import { useEffect, useState } from "react";
 
 import { APIProvider } from "@vis.gl/react-google-maps";
 import { AddressSearchMap } from "./AddressSearchMap";
 import FloatingAction from "@components/ui/FloatingAction";
+import FormActions from "@components/ui/FormActions";
 import FormHeader from "@components/ui/FormHeader";
 import type { Location } from "@interfaces/Location";
 import toast from "react-hot-toast";
@@ -180,29 +181,17 @@ const LocationForm = ({ location = null }: LocationFormProps) => {
             />
           </Grid>
 
-          <Grid size={12} sx={{ display: 'flex', gap: 2, justifyContent: 'center', mt: 2 }}>
-            {inEdit ? (
-              <>
-                <Button variant="outlined" size="large" onClick={handleCancel}>
-                  Cancel
-                </Button>
-                
-                {!isCreateMode && (
-                  <Button variant="contained" size="large" onClick={() => openDeleteDialog({name: formData.name, type: "Location"}, handleConfirmDelete)} color="error">
-                    Delete
-                  </Button>
-                )}
-
-                <Button variant="contained" size="large" onClick={handleSave} color="success">
-                  {isCreateMode ? "Create Location" : "Save Changes"}
-                </Button>
-
-              </>
-            ) : isEditor ? (
-              <Button variant="contained" size="large" onClick={() => setIsInEdit(true)}>
-                Edit
-              </Button>
-            ) : null}
+          <Grid size={12} sx={{ mt: 2 }}>
+            <FormActions
+              mode={isCreateMode ? "create" : "edit"}
+              isEditing={inEdit}
+              isEditor={isEditor}
+              onCancel={handleCancel}
+              onDelete={() => openDeleteDialog({ name: formData.name, type: "Location" }, handleConfirmDelete)}
+              onEdit={() => setIsInEdit(true)}
+              onSave={handleSave}
+              createLabel="Create Location"
+            />
           </Grid>
         </Grid>
       </Box>
