@@ -133,7 +133,25 @@ const PlaylogForm = ({ playlog = null }: PlaylogFormProps) => {
 
   return (
     <Box sx={{ width: '100%', maxWidth: 600, mx: 'auto', p: 3, pb: 10, bgcolor: 'background.paper', border: '1px solid', borderColor: 'divider', borderRadius: 3, boxShadow: 1 }}>
-      <FormHeader isCreateMode={isCreateMode} />
+      <FormHeader
+        isCreateMode={isCreateMode}
+        rightAdornment={
+          <FormActions
+            mode={isCreateMode ? "create" : "edit"}
+            isEditing={inEdit}
+            isEditor={isEditor}
+            onCancel={handleCancel}
+            onDelete={() => openDeleteDialog({
+              name: `${selectedVinyl?.artist || 'Unknown'} - ${selectedVinyl?.album || 'Unknown'}`,
+              type: "Playlog"
+            }, handleConfirmDelete)}
+            onEdit={() => setIsInEdit(true)}
+            onSave={handleSave}
+            saveDisabled={!formData.album_id}
+            createLabel="Create Play"
+          />
+        }
+      />
       <Grid container spacing={3}>
         
         {/* Unified Vinyl Autocomplete */}
@@ -211,23 +229,6 @@ const PlaylogForm = ({ playlog = null }: PlaylogFormProps) => {
             disabled={!inEdit}
             multiline
             rows={4}
-          />
-        </Grid>
-
-        {/* Action Buttons */}
-        <Grid size={12} sx={{ mt: 2 }}>
-          <FormActions
-            mode={isCreateMode ? "create" : "edit"}
-            isEditing={inEdit}
-            isEditor={isEditor}
-            onCancel={handleCancel}
-            onDelete={() => openDeleteDialog({
-              name: `${selectedVinyl?.artist || 'Unknown'} - ${selectedVinyl?.album || 'Unknown'}`,
-              type: "Playlog"
-            }, handleConfirmDelete)}
-            onEdit={() => setIsInEdit(true)}
-            onSave={handleSave}
-            saveDisabled={!formData.album_id}
           />
         </Grid>
       </Grid>

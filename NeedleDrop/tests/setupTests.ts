@@ -7,13 +7,16 @@ import { cleanup } from '@testing-library/react';
 vi.mock('@mui/icons-material', () => ({
   __esModule: true,
   default: new Proxy({}, { get: () => () => null }),
+  Cancel: () => null,
   Settings: () => null,
   Delete: () => null,
   DragHandle: () => null,
+  Edit: () => null,
   BarChart: () => null,
   ChevronLeft: () => null,
   ChevronRight: () => null,
   RotateLeft: () => null,
+  Save: () => null,
 }));
 
 

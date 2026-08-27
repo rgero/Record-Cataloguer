@@ -118,7 +118,21 @@ const LocationForm = ({ location = null }: LocationFormProps) => {
   return (
     <APIProvider apiKey={import.meta.env.VITE_GOOGLE_LOCATIONS_API} libraries={['places', 'marker']}>
       <Box sx={{ width: '100%', maxWidth: 600, mx: 'auto', p: 3, pb: 10, bgcolor: 'background.paper', border: '1px solid', borderColor: 'divider', borderRadius: 3, boxShadow: 1 }}>
-        <FormHeader isCreateMode={isCreateMode}/>
+        <FormHeader
+          isCreateMode={isCreateMode}
+          rightAdornment={
+            <FormActions
+              mode={isCreateMode ? "create" : "edit"}
+              isEditing={inEdit}
+              isEditor={isEditor}
+              onCancel={handleCancel}
+              onDelete={() => openDeleteDialog({ name: formData.name, type: "Location" }, handleConfirmDelete)}
+              onEdit={() => setIsInEdit(true)}
+              onSave={handleSave}
+              createLabel="Create Location"
+            />
+          }
+        />
         <Grid container spacing={3}>
           {/* Name Field */}
           <Grid size={12}>
@@ -181,18 +195,6 @@ const LocationForm = ({ location = null }: LocationFormProps) => {
             />
           </Grid>
 
-          <Grid size={12} sx={{ mt: 2 }}>
-            <FormActions
-              mode={isCreateMode ? "create" : "edit"}
-              isEditing={inEdit}
-              isEditor={isEditor}
-              onCancel={handleCancel}
-              onDelete={() => openDeleteDialog({ name: formData.name, type: "Location" }, handleConfirmDelete)}
-              onEdit={() => setIsInEdit(true)}
-              onSave={handleSave}
-              createLabel="Create Location"
-            />
-          </Grid>
         </Grid>
       </Box>
       <FloatingAction fallbackPath="/locations"/>

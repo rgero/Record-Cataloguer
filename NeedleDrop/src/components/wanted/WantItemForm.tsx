@@ -138,10 +138,24 @@ const WantItemForm = ({ wantedItem = null }: WantItemFormProps) => {
     });
   };
 
-  const rightAdornment = !isCreateMode && isEditor && (
-    <IconButton onClick={handleConvertToVinyl}>
-      <DriveFileMove/>
-    </IconButton>
+  const rightAdornment = (
+    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+      <FormActions
+        mode={isCreateMode ? "create" : "edit"}
+        isEditing={inEdit}
+        isEditor={isEditor}
+        onCancel={handleCancel}
+        onDelete={() => openDeleteDialog({ name: `${formData.artist} - ${formData.album}`, type: "Want Item" }, handleConfirmDelete)}
+        onEdit={() => setIsInEdit(true)}
+        onSave={handleSave}
+        createLabel="Create Wanted Item"
+      />
+      {!isCreateMode && isEditor && (
+        <IconButton onClick={handleConvertToVinyl} aria-label="Convert to vinyl">
+          <DriveFileMove/>
+        </IconButton>
+      )}
+    </Box>
   )
   
   return (
@@ -248,22 +262,8 @@ const WantItemForm = ({ wantedItem = null }: WantItemFormProps) => {
             <MenuItem value="High">High</MenuItem>
           </Select>
         </Grid>
-
-
-        {/* Action Buttons */}
-        <Grid size={12} sx={{ mt: 2 }}>
-          <FormActions
-            mode={isCreateMode ? "create" : "edit"}
-            isEditing={inEdit}
-            isEditor={isEditor}
-            onCancel={handleCancel}
-            onDelete={() => openDeleteDialog({ name: `${formData.artist} - ${formData.album}`, type: "Want Item" }, handleConfirmDelete)}
-            onEdit={() => setIsInEdit(true)}
-            onSave={handleSave}
-          />
-          <FloatingAction fallbackPath="/wantlist"/>
-        </Grid>
       </Grid>
+      <FloatingAction fallbackPath="/wantlist"/>
     </Box>
   );
 };

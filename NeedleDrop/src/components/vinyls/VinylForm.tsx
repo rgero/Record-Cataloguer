@@ -164,7 +164,21 @@ const VinylForm = ({ vinyl = null }: VinylFormProps) => {
 
   return (
     <Box sx={{ width: '100%', maxWidth: 600, mx: 'auto', p: 3, pb: 10, bgcolor: 'background.paper', border: '1px solid', borderColor: 'divider', borderRadius: 3, boxShadow: 1 }}>
-      <FormHeader isCreateMode={isCreateMode} />
+      <FormHeader
+        isCreateMode={isCreateMode}
+        rightAdornment={
+          <FormActions
+            mode={isCreateMode ? "create" : "edit"}
+            isEditing={inEdit}
+            isEditor={isEditor}
+            onCancel={handleCancel}
+            onDelete={() => openDeleteDialog({ name: `${formData.artist} - ${formData.album}`, type: "Vinyl" }, handleConfirmDelete)}
+            onEdit={() => setIsInEdit(true)}
+            onSave={handleSave}
+            createLabel="Create Vinyl"
+          />
+        }
+      />
       <Grid container spacing={3}>
         <Grid size={12}>
           <FormLabel sx={{ mb: 1, display: 'block', fontWeight: 'bold' }}>Artist</FormLabel>
@@ -442,17 +456,6 @@ const VinylForm = ({ vinyl = null }: VinylFormProps) => {
           </Grid>
         )}
 
-        <Grid size={12} sx={{ mt: 2 }}>
-          <FormActions
-            mode={isCreateMode ? "create" : "edit"}
-            isEditing={inEdit}
-            isEditor={isEditor}
-            onCancel={handleCancel}
-            onDelete={() => openDeleteDialog({ name: `${formData.artist} - ${formData.album}`, type: "Vinyl" }, handleConfirmDelete)}
-            onEdit={() => setIsInEdit(true)}
-            onSave={handleSave}
-          />
-        </Grid>
       </Grid>
       <FloatingAction fallbackPath="/vinyls" />
     </Box>
