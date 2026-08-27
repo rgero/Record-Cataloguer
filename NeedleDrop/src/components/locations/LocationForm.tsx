@@ -206,7 +206,6 @@ const LocationForm = ({ location = null }: LocationFormProps) => {
               onDelete={() => openDeleteDialog({ name: formData.name, type: "Location" }, handleConfirmDelete)}
               onEdit={() => setIsInEdit(true)}
               onSave={handleSave}
-              createLabel="Create Location"
             />
           </Grid>
 

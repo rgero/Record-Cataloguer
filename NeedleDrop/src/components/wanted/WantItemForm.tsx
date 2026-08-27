@@ -274,7 +274,6 @@ const WantItemForm = ({ wantedItem = null }: WantItemFormProps) => {
             onDelete={() => openDeleteDialog({ name: `${formData.artist} - ${formData.album}`, type: "Want Item" }, handleConfirmDelete)}
             onEdit={() => setIsInEdit(true)}
             onSave={handleSave}
-            createLabel="Create Wanted Item"
           />
         </Grid>
       </Grid>

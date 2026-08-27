@@ -11,13 +11,12 @@ interface FormActionsProps {
   onEdit: () => void;
   onSave: () => void;
   saveDisabled?: boolean;
-  createLabel?: string;
 }
 
 const fadeDuration = 250;
 const fadeDelay = 250;
 
-const FormActions = ({mode, isEditing, isEditor, onCancel, onDelete, onEdit, onSave, saveDisabled = false, createLabel = "Create"}: FormActionsProps) => {
+const FormActions = ({mode, isEditing, isEditor, onCancel, onDelete, onEdit, onSave, saveDisabled = false}: FormActionsProps) => {
   return (
     <Box
       sx={{
@@ -40,7 +39,7 @@ const FormActions = ({mode, isEditing, isEditor, onCancel, onDelete, onEdit, onS
           }}
           aria-hidden={isEditing}
         >
-          <Button variant="contained" size="large" onClick={onEdit}>
+          <Button variant="contained" onClick={onEdit}>
             Edit
           </Button>
         </Box>
@@ -60,18 +59,18 @@ const FormActions = ({mode, isEditing, isEditor, onCancel, onDelete, onEdit, onS
         }}
         aria-hidden={!isEditing}
       >
-        <Button variant="outlined" size="large" onClick={onCancel}>
+        <Button variant="outlined" onClick={onCancel}>
           Cancel
         </Button>
 
         {mode === "edit" && onDelete && (
-          <Button variant="contained" size="large" onClick={onDelete} color="error">
+          <Button variant="contained" onClick={onDelete} color="error">
             Delete
           </Button>
         )}
 
-        <Button variant="contained" size="large" onClick={onSave} color="success" disabled={saveDisabled}>
-          {mode === "create" ? createLabel : "Save Changes"}
+        <Button variant="contained" onClick={onSave} color="success" disabled={saveDisabled}>
+          {mode === "create" ? "Create" : "Save"}
         </Button>
       </Box>
     </Box>

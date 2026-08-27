@@ -467,7 +467,6 @@ const VinylForm = ({ vinyl = null }: VinylFormProps) => {
             onDelete={() => openDeleteDialog({ name: `${formData.artist} - ${formData.album}`, type: "Vinyl" }, handleConfirmDelete)}
             onEdit={() => setIsInEdit(true)}
             onSave={handleSave}
-            createLabel="Create Vinyl"
           />
         </Grid>
 

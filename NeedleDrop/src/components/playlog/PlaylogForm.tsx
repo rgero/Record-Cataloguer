@@ -247,7 +247,6 @@ const PlaylogForm = ({ playlog = null }: PlaylogFormProps) => {
             onEdit={() => setIsInEdit(true)}
             onSave={handleSave}
             saveDisabled={!formData.album_id}
-            createLabel="Create Play"
           />
         </Grid>
       </Grid>

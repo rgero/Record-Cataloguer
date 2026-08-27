@@ -243,7 +243,7 @@ describe("LocationForm", () => {
   it("shows validation errors when required fields are empty", async () => {
     render(<LocationForm />);
 
-    fireEvent.click(screen.getAllByRole("button", { name: /create location/i })[1]);
+    fireEvent.click(screen.getAllByRole("button", { name: /create/i })[1]);
 
     expect(mockLocationContext.createLocation).not.toHaveBeenCalled();
 
