@@ -168,7 +168,7 @@ export const AddressSearchMap = ({ initialAddress, onAddressSelect, disabled, er
         </Paper>
       )}
       <Box sx={{ height: '300px', width: '100%', mt: 2, borderRadius: 1, overflow: 'hidden', border: '1px solid #ccc' }}>
-        <Map center={coords} defaultZoom={15} gestureHandling={'greedy'}>
+        <Map center={coords} defaultZoom={15} gestureHandling={disabled ? 'none' : 'greedy'}>
           <Marker position={coords} />
         </Map>
       </Box>
