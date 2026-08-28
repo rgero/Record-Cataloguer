@@ -31,7 +31,7 @@ const VinylPlaysTable = ({playlogs} : {playlogs: PlayLog[]}) => {
   };
 
   return (
-    <Container disableGutters sx={{ width: { xs: "90%", lg: "50%" }, maxWidth: '100%' }}>
+    <Container disableGutters sx={{ width: { xs: "90%", lg: "45%" }, maxWidth: '100%' }}>
       <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%', overflow: 'hidden' }}>
         <Grid
           container
