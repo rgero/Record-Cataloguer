@@ -5,6 +5,7 @@ import type { PlayLog } from "@interfaces/PlayLog";
 export interface PlaylogContextType {
   playlogs : PlayLog[];
   getPlaylogById: (id: number) => PlayLog | null;
+  getPlaylogsByAlbumId: (albumId: number) => PlayLog[];
   error: Error | null;
   isLoading: boolean;
   isFetching: boolean;

@@ -80,12 +80,17 @@ export const PlaylogProvider: React.FC<{ children: React.ReactNode }> = ({ child
       return listenerIds.includes(id);
     })
   }
+
+  const getPlaylogsByAlbumId = (albumId: number): PlayLog[] => {
+    return playlogs.filter((item: PlayLog) => item.album_id === albumId);
+  }
   
   return (
     <PlaylogContext.Provider
       value={{
         getPlaylogById,
         getPlaylogsByUserId,
+        getPlaylogsByAlbumId,
         playlogs,
         error,
         isLoading,

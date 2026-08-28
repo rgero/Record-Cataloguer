@@ -10,7 +10,11 @@ import WantedItemDetailsPage from "@pages/wanted/WantedItemDetailsPage";
 const {mockUseParams, mockLocationContext, mockPlaylogContext, mockVinylContext, mockWantedItemContext, mockToast} = vi.hoisted(() => ({
   mockUseParams: vi.fn(),
   mockLocationContext: { isLoading: false, getLocationById: vi.fn() },
-  mockPlaylogContext: { isLoading: false, getPlaylogById: vi.fn() },
+  mockPlaylogContext: {
+    isLoading: false,
+    getPlaylogById: vi.fn(),
+    getPlaylogsByAlbumId: vi.fn(() => []),
+  },
   mockVinylContext: { isLoading: false, getVinylById: vi.fn() },
   mockWantedItemContext: { isLoading: false, getWantedItemById: vi.fn() },
   mockToast: { error: vi.fn() },
