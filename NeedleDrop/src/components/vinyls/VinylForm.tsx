@@ -339,6 +339,23 @@ const VinylForm = ({ vinyl = null }: VinylFormProps) => {
             onChange={(e) => setFormData({ ...formData, purchaseLocation: locations.find(l => l.id === Number(e.target.value)) ?? null })}
             fullWidth
             disabled={!inEdit}
+            MenuProps={{
+              anchorOrigin: {
+                vertical: "bottom",
+                horizontal: "left",
+              },
+              transformOrigin: {
+                vertical: "top",
+                horizontal: "left",
+              },
+              slotProps: {
+                paper: {
+                  style: {
+                    maxHeight: 250,
+                  },
+                },
+              },
+            }}
           >
             {[...locations].sort((a, b) => a.name.localeCompare(b.name)).map((location) => (
               <MenuItem key={location.id} value={location.id}>
