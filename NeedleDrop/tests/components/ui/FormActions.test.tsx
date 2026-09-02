@@ -56,7 +56,7 @@ describe("FormActions", () => {
       />,
     );
 
-    fireEvent.click(screen.getByRole("button", { name: "Cancel" }));
+    fireEvent.click(screen.getByRole("button", { name: "Dismiss edit options" }));
     fireEvent.click(screen.getByRole("button", { name: "Delete" }));
     fireEvent.click(screen.getByRole("button", { name: "Save Changes" }));
 

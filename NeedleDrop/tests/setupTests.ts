@@ -8,6 +8,7 @@ vi.mock('@mui/icons-material', () => ({
   __esModule: true,
   default: new Proxy({}, { get: () => () => null }),
   Cancel: () => null,
+  Close: () => null,
   Settings: () => null,
   Delete: () => null,
   DragHandle: () => null,

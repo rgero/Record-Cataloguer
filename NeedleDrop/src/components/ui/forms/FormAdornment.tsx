@@ -1,5 +1,5 @@
 import { Box, IconButton, Tooltip } from "@mui/material";
-import { Cancel, Delete, Edit, Save } from "@mui/icons-material";
+import { Close, Delete, Edit, Save } from "@mui/icons-material";
 
 type FormMode = "create" | "edit";
 
@@ -16,64 +16,70 @@ interface FormActionsProps {
 }
 
 const FormAdornment = ({mode, isEditing, isEditor, onCancel, onDelete, onEdit, onSave, saveDisabled = false, createLabel = "Create"}: FormActionsProps) => {
+  const handleEditToggle = () => {
+    if (isEditing) {
+      onCancel();
+      return;
+    }
+
+    onEdit();
+  };
+
   return (
-    <Box sx={{ display: "flex", gap: 1, alignItems: "center" }}>
+    <Box
+      sx={{
+        width: "100%",
+        display: "flex",
+        justifyContent: "flex-end",
+        alignItems: "center",
+        minHeight: 40,
+        flexWrap: "nowrap",
+        overflow: "hidden",
+      }}
+    >
       {isEditor && (
         <Box
           sx={{
-            width: isEditing ? 0 : 48,
-            opacity: isEditing ? 0 : 1,
-            transform: isEditing ? "translateX(-8px)" : "translateX(0)",
+            display: "flex",
+            alignItems: "center",
+            gap: 1,
+            mr: 1,
+            maxWidth: isEditing ? 220 : 0,
+            opacity: isEditing ? 1 : 0,
+            transform: isEditing ? "translateX(0)" : "translateX(16px)",
             overflow: "hidden",
+            transition: "max-width 250ms ease, opacity 180ms ease, transform 250ms ease",
+            pointerEvents: isEditing ? "auto" : "none",
+            whiteSpace: "nowrap",
             flexShrink: 0,
-            transition: "width 250ms ease, opacity 180ms ease, transform 250ms ease",
-            pointerEvents: isEditing ? "none" : "auto",
           }}
-          aria-hidden={isEditing}
+          aria-hidden={!isEditing}
         >
-          <Tooltip title="Edit">
-            <IconButton onClick={onEdit} aria-label="Edit">
-              <Edit />
-            </IconButton>
+          {mode === "edit" && onDelete && (
+            <Tooltip title="Delete">
+              <IconButton onClick={onDelete} aria-label="Delete" color="error">
+                <Delete />
+              </IconButton>
+            </Tooltip>
+          )}
+
+          <Tooltip title={mode === "create" ? createLabel : "Save Changes"}>
+            <span>
+              <IconButton onClick={onSave} aria-label={mode === "create" ? createLabel : "Save Changes"} color="success" disabled={saveDisabled}>
+                <Save />
+              </IconButton>
+            </span>
           </Tooltip>
         </Box>
       )}
 
-      <Box
-        sx={{
-          display: "grid",
-          gridTemplateColumns: isEditing ? "1fr" : "0fr",
-          opacity: isEditing ? 1 : 0,
-          transform: isEditing ? "translateX(0)" : "translateX(16px)",
-          transition: "grid-template-columns 250ms ease, opacity 180ms ease, transform 250ms ease",
-          pointerEvents: isEditing ? "auto" : "none",
-        }}
-          aria-hidden={!isEditing}
-      >
-        <Box sx={{ display: "flex", gap: 1, alignItems: "center", minWidth: 0, overflow: "hidden" }}>
-        <Tooltip title="Cancel">
-          <IconButton onClick={onCancel} aria-label="Cancel">
-            <Cancel />
+      {isEditor && (
+        <Tooltip title={isEditing ? "Dismiss" : "Edit"}>
+          <IconButton onClick={handleEditToggle} aria-label={isEditing ? "Dismiss edit options" : "Edit"} sx={{ flexShrink: 0 }}>
+            {isEditing ? <Close /> : <Edit />}
           </IconButton>
         </Tooltip>
-
-        {mode === "edit" && onDelete && (
-          <Tooltip title="Delete">
-            <IconButton onClick={onDelete} aria-label="Delete" color="error">
-              <Delete />
-            </IconButton>
-          </Tooltip>
-        )}
-
-        <Tooltip title={mode === "create" ? createLabel : "Save Changes"}>
-          <span>
-            <IconButton onClick={onSave} aria-label={mode === "create" ? createLabel : "Save Changes"} color="success" disabled={saveDisabled}>
-              <Save />
-            </IconButton>
-          </span>
-        </Tooltip>
-        </Box>
-      </Box>
+      )}
     </Box>
   );
 };
