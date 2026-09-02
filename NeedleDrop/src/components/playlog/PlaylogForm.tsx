@@ -1,10 +1,11 @@
-import { Autocomplete, Box, FormLabel, Grid, TextField, Typography } from "@mui/material";
+import { Autocomplete, Box, FormLabel, Grid, IconButton, TextField, Typography } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 
 import FloatingAction from "@components/ui/FloatingAction";
 import FormActions from "@components/ui/forms/FormActions";
 import FormAdornment from "@components/ui/forms/FormAdornment";
 import FormHeader from "@components/ui/forms/FormHeader";
+import InfoIcon from "@mui/icons-material/Info";
 import type { PlayLog } from "@interfaces/PlayLog";
 import { format } from 'date-fns';
 import toast from "react-hot-toast";
@@ -133,7 +134,7 @@ const PlaylogForm = ({ playlog = null }: PlaylogFormProps) => {
   };
 
   return (
-    <Box sx={{ width: '100%', maxWidth: 600, mx: 'auto', p: 3, pb: 10, bgcolor: 'background.paper', border: '1px solid', borderColor: 'divider', borderRadius: 3, boxShadow: 1 }}>
+    <Box sx={{ width: '100%', maxWidth: 600, mx: 'auto', px: 4, py: 3, pb: 10, bgcolor: 'background.paper', border: '1px solid', borderColor: 'divider', borderRadius: 3, boxShadow: 1 }}>
       <FormHeader
         isCreateMode={isCreateMode}
         rightAdornment={
@@ -157,8 +158,15 @@ const PlaylogForm = ({ playlog = null }: PlaylogFormProps) => {
         
         {/* Unified Vinyl Autocomplete */}
         <Grid size={12}>
-          <FormLabel sx={{ mb: 1, display: 'block', fontWeight: 'bold' }}>
-            Vinyl Record <span aria-hidden="true">*</span>
+          <FormLabel component="div" sx={{ mb: 1, display: 'flex', width: '100%', justifyContent: 'space-between', alignItems: 'center', fontWeight: 'bold', lineHeight: 1.2, minHeight: 32 }}>
+            <Box component="span" sx={{ display: 'flex', alignItems: 'center' }}>
+              Vinyl Record <span aria-hidden="true">*</span>
+            </Box>
+            {!isCreateMode && !inEdit && selectedVinyl && !selectedVinyl?.archived ? (
+              <IconButton size="small" onClick={() => navigate(`/vinyls/${selectedVinyl.id}`)} aria-label="View vinyl details" sx={{ p: 0.5, ml: 1 }}>
+                <InfoIcon fontSize="small" />
+              </IconButton>
+            ) : null}
           </FormLabel>
           <Autocomplete
             disabled={!inEdit}

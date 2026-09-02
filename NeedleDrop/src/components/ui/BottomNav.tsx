@@ -17,7 +17,7 @@ export default function BottomNav() {
     if (path.startsWith("/vinyls") || path === "/") return "/vinyls";
     if (path.startsWith("/locations")) return "/locations";
     if (path.startsWith("/wantlist")) return "/wantlist";
-    if (path.startsWith("/playlog")) return "/playlog";
+    if (path.startsWith("/plays")) return "/plays";
     if (path.startsWith("/stats")) return "/stats";
     return path;
   };

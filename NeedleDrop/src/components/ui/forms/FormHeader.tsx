@@ -19,11 +19,7 @@ const FormHeader = ({isCreateMode,rightAdornment = null}: {isCreateMode: boolean
           {isCreateMode ? "Add New" : "Details"}
         </Typography>
       </Grid>
-      {rightAdornment && (
-        <Grid>
-          {rightAdornment}
-        </Grid>
-      )}
+      {rightAdornment}
     </Grid>
   );
 }
