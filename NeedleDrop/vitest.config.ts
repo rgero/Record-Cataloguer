@@ -20,11 +20,12 @@ export default defineConfig({
   test: {
     environment: 'jsdom',
     globals: true,
+    pool: 'threads',
     setupFiles: './tests/setupTests.ts',
     css: false,
     server: {
       deps: {
-        inline: ['@mui/material', '@mui/x-data-grid', 'react-transition-group'],
+        inline: ['@mui/material'],
       },
     },
   },

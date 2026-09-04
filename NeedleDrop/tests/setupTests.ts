@@ -20,14 +20,6 @@ vi.mock('@mui/icons-material', () => ({
   Save: () => null,
 }));
 
-
-vi.mock('@mui/material', async () => {
-  const actual = await vi.importActual('@mui/material');
-  return {
-    ...actual,
-  };
-});
-
 afterEach(() => {
   cleanup();
 });

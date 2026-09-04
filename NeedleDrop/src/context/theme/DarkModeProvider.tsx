@@ -1,6 +1,8 @@
 import { ThemeProvider, createTheme } from "@mui/material";
 
 import { DarkModeContext } from "./DarkModeContext";
+import { darkModePalette } from "./DarkModeTheme";
+import { lightModePalette } from "./LightModeTheme";
 import { useLocalStorage } from "../../hooks/useLocalStorage";
 import { useMemo } from "react";
 
@@ -17,6 +19,7 @@ const DarkModeProvider = ({ children }: {children: React.ReactNode}) => {
       createTheme({
         palette: {
           mode,
+          ...(mode === "light" ? lightModePalette : darkModePalette),
         },
         components: {
           MuiDialog: {
