@@ -1,7 +1,6 @@
 import { Box, Container, Grid, Pagination, Typography, useMediaQuery, useTheme } from "@mui/material"
-import { useMemo, useState } from "react";
-
 import type { SxProps, Theme } from "@mui/material";
+import { useMemo, useState } from "react";
 
 interface TwoColumnPaginatedTableProps<T> {
   data: T[];
@@ -14,7 +13,7 @@ interface TwoColumnPaginatedTableProps<T> {
   getRowKey: (item: T) => string;
   renderPrimary?: (item: T) => string;
   primaryColumnSize?: number;
-  containerSx: SxProps<Theme>;
+  containerSx?: SxProps<Theme>;
   paginate?: boolean;
 }
 
@@ -65,7 +64,7 @@ const Row = <T,>({ item, secondaryKey, primaryContent, primaryColumnSize, second
   </Grid>
 );
 
-const TwoColumnPaginatedTable = <T,>({data, primaryKey, secondaryKey, sortKey, sortDirection = "desc", primaryHeader, secondaryHeader, getRowKey, renderPrimary, primaryColumnSize = 6, containerSx, paginate = true}: TwoColumnPaginatedTableProps<T>) => {
+const TwoColumnPaginatedTable = <T,>({data, primaryKey, secondaryKey, sortKey, sortDirection = "desc", primaryHeader, secondaryHeader, getRowKey, renderPrimary, primaryColumnSize = 6, containerSx = { width: "100%" }, paginate = true}: TwoColumnPaginatedTableProps<T>) => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   const secondaryColumnSize = 12 - primaryColumnSize;

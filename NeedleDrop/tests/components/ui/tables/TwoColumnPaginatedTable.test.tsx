@@ -22,10 +22,29 @@ const baseProps = {
   primaryHeader: "Name",
   secondaryHeader: "Count",
   getRowKey: (item: Row) => item.name,
-  containerSx: {},
 };
 
+const getTableContainer = () => screen.getByText("Name").closest(".MuiContainer-root");
+
 describe("TwoColumnPaginatedTable", () => {
+  it("defaults the container to full width when containerSx is omitted", () => {
+    render(<TwoColumnPaginatedTable {...baseProps} data={rows.slice(0, 1)} />);
+
+    expect(getTableContainer()).toHaveStyle({ width: "100%" });
+  });
+
+  it("uses the provided containerSx when supplied", () => {
+    render(
+      <TwoColumnPaginatedTable
+        {...baseProps}
+        data={rows.slice(0, 1)}
+        containerSx={{ width: "50%" }}
+      />,
+    );
+
+    expect(getTableContainer()).toHaveStyle({ width: "50%" });
+  });
+
   it("renders headers and row values", () => {
     render(<TwoColumnPaginatedTable {...baseProps} data={rows.slice(0, 2)} />);
 
