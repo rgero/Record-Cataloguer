@@ -8,6 +8,7 @@ export interface WantedItem {
   imageUrl?: string,
   searcher: User[],
   notes?: string,
+  length: number | null,
   created_at: Date,
   weight: Weight
 }

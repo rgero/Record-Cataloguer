@@ -11,6 +11,7 @@ vi.mock('@mui/icons-material', () => ({
   Close: () => null,
   Settings: () => null,
   Delete: () => null,
+  DriveFileMove: () => null,
   DragHandle: () => null,
   Edit: () => null,
   BarChart: () => null,

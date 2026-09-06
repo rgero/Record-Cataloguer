@@ -313,4 +313,50 @@ describe("WantItemForm", () => {
       expect(mockToast.error).toHaveBeenCalledWith("Please fix the highlighted fields before saving.");
     });
   });
+
+  it("saves the optional length value", async () => {
+    render(<WantItemForm />);
+
+    fireEvent.change(screen.getByRole("spinbutton"), { target: { value: "42" } });
+    fireEvent.change(screen.getAllByRole("textbox")[0], { target: { value: "Massive Attack" } });
+    fireEvent.change(screen.getAllByRole("textbox")[1], { target: { value: "Mezzanine" } });
+    fireEvent.click(screen.getAllByRole("button", { name: /create/i })[1]);
+
+    await waitFor(() => {
+      expect(mockWantedItemContext.createWantedItem).toHaveBeenCalledWith(
+        expect.objectContaining({ length: 42 }),
+      );
+    });
+  });
+
+  it("passes length when converting a wanted item to a vinyl", () => {
+    const wantedItem = {
+      id: 7,
+      artist: "Massive Attack",
+      album: "Mezzanine",
+      searcher: [],
+      notes: "Keep sealed",
+      length: 42,
+      imageUrl: "cover.jpg",
+      weight: "High" as const,
+      created_at: new Date(),
+    };
+
+    render(<WantItemForm wantedItem={wantedItem} />);
+
+    fireEvent.click(screen.getByRole("button", { name: /convert to vinyl/i }));
+
+    expect(mockNavigate).toHaveBeenCalledWith("/vinyls/create", {
+      state: {
+        fromWantItem: {
+          wantedID: 7,
+          artist: "Massive Attack",
+          album: "Mezzanine",
+          notes: "Keep sealed",
+          length: 42,
+          imageUrl: "cover.jpg",
+        },
+      },
+    });
+  });
 });

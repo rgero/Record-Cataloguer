@@ -26,6 +26,7 @@ const emptyWant : WantedItem = {
   album: "",
   searcher: [],
   notes: "",
+  length: null,
   imageUrl: "",
   weight: "Medium",
   created_at: new Date(),
@@ -133,6 +134,7 @@ const WantItemForm = ({ wantedItem = null }: WantItemFormProps) => {
           artist: formData.artist,
           album: formData.album,
           notes: formData.notes,
+          length: formData.length,
           imageUrl: formData.imageUrl
         } 
       } 
@@ -239,6 +241,22 @@ const WantItemForm = ({ wantedItem = null }: WantItemFormProps) => {
             disabled={!inEdit}
             multiline
             rows={4}
+          />
+        </Grid>
+
+        {/* Length Field */}
+        <Grid size={12}>
+          <FormLabel sx={{ mb: 1, display: 'block', fontWeight: 'bold' }}>Length (minutes)</FormLabel>
+          <TextField
+            type="number"
+            value={formData.length ?? ''}
+            onChange={(e) => setFormData({
+              ...formData,
+              length: e.target.value === '' ? null : Number(e.target.value),
+            })}
+            fullWidth
+            disabled={!inEdit}
+            placeholder="Enter length in minutes"
           />
         </Grid>
 

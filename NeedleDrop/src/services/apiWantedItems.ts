@@ -29,6 +29,7 @@ export const getWantedItems = async (): Promise<WantedItem[]> => {
     artist: v.artist,
     album: v.album,
     notes: v.notes,
+    length: v.length ?? null,
     imageUrl: v.imageUrl,
     searcher: v.searcher ?.map((id: string) => {
       return userMap[id]
